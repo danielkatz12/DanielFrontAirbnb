@@ -11,7 +11,7 @@ const schema = z.object({
     name: z.string().min(3, "Name must be longer then 3 charecters").max(20, "Name must be less then 20 charecters"),
     contactEmail: z.string().optional(),
     contactPhoneNumber: z.number().optional(),
-    age: z.number({invalid_type_error: "Age is requiered"}).min(18, "Age must be more then 18").optional()
+    age: z.number().min(18, "Age must be more then 18").optional()
 })
 
 type FormData = z.infer<typeof schema>
@@ -26,10 +26,23 @@ console.log()
 function UserProfileDetailsForm(props: userProps) {
     // const idToken: string | null = getIdToken();
 
+    // const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+    // const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenState);
+    // const [idToken, setIdToken] = useRecoilState(idTokenState);
+
+
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>({resolver: zodResolver(schema)})
 
     const onSubmit = async (data: FieldValues) => {
-        console.log(props)
+        // console.log("access token: ", accessToken);
+        // console.log("refresh token: ", refreshToken);
+        // console.log("id token: ", idToken);
+        // setAccessToken(accessToken);
+        // setRefreshToken(refreshToken);
+        // setIdToken(idToken);
+
+
+        console.log(props);
         console.log("data: ", data)
         // const userRegistrationDetails: GoogleRegistration = {
         //     name: data.name,

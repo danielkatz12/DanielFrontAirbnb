@@ -1,55 +1,39 @@
-import {ReactElement, useEffect, useState} from "react";
+import {useEffect} from "react";
+import Registration from "./components/Registration.tsx";
+import {useRecoilState} from "recoil";
 import {
-    deleteAccessTokenFromLocalStorage, deleteIdTokenFromLocalStorage,
+    accessTokenState,
+    currentDisplayedComponentState,
+    idTokenState,
+    refreshTokenState
+} from "./stateManagement/RecoilState.ts";
+import {
+    deleteAccessTokenFromLocalStorage,
+    deleteIdTokenFromLocalStorage,
     deleteRefreshTokenFromLocalStorage,
     getAccessTokenFromLocalStorage,
     getIdTokenFromLocalStorage,
     getRefreshTokenFromLocalStorage,
-    saveAccessTokenInLocalStorage, saveIdTokenInLocalStorage,
+    saveAccessTokenInLocalStorage,
+    saveIdTokenInLocalStorage,
     saveRefreshTokenInLocalStorage
 } from "./services/token-service.ts";
-import Registration from "./components/Registration.tsx";
-import {RegistrationDetails} from "./interfaces/registration-details.ts";
-import PostsList from "./PostsList.tsx";
 
 
 function App() {
-    const [connectedUserDetails, setConnectedUserDetails] = useState<RegistrationDetails>();
-    const [currOpenedComponent, setCurrOpenedComponent] = useState<ReactElement | undefined>(<PostsList/>);
-    const [accessToken, setAccessToken] = useState<string | null>(getAccessTokenFromLocalStorage())
-    const [refreshToken, setRefreshToken] = useState<string | null>(getRefreshTokenFromLocalStorage())
-    const [idToken, setIdToken] = useState<string | null>(getIdTokenFromLocalStorage());
+    // const [connectedUserDetails, setConnectedUserDetails] = useState<RegistrationDetails>();
+    const [currDisplayedComp] = useRecoilState(currentDisplayedComponentState);
+
+    const [accessToken] = useRecoilState(accessTokenState);
+    const [refreshToken] = useRecoilState(refreshTokenState);
+    const [idToken] = useRecoilState(idTokenState);
 
 
     const isUserConnected = () => {
-        return accessToken
-    }
-    const setConnectedUserDetailsState = (connectedUser: RegistrationDetails) => {
-        console.log(connectedUserDetails);//todo: to remove this!!!
-        setConnectedUserDetails(connectedUser);
-    }
-    const changeAccessTokenState = (newAccessToken: string) => {
-        setAccessToken(newAccessToken);
-    }
-    const changeRefreshTokenState = (newRefreshToken: string) => {
-        setRefreshToken(newRefreshToken);
-    }
-    const changeIdTokenState = (newIdToken: string) => {
-        setIdToken(newIdToken);
+        return accessToken;
     }
 
-    const changeCurrOpenedComponent = (componentToOpen: ReactElement | undefined) => {
-        setCurrOpenedComponent(componentToOpen);
-    }
-
-    // const handleTokensWhenUserLogout = () => {
-    //     setAccessToken(null);
-    //     setRefreshToken(null);
-    //     setIdToken(null);
-    //     setCurrOpenedComponent(<Registration/>)//Todo: not here!!
-    // }
-
-
+    //TODO: MOVE TO OTHER PLACE THIS LOGIC!!
     useEffect(() => {
         accessToken ? saveAccessTokenInLocalStorage(accessToken) : (getAccessTokenFromLocalStorage() && deleteAccessTokenFromLocalStorage());
     }, [accessToken]);
@@ -65,13 +49,8 @@ function App() {
 
     return (
         <div>
-            {/*{currOpenedComponent}*/}
-            {isUserConnected() && currOpenedComponent}
-            {!isUserConnected() && <Registration setConnectedUserDetails={setConnectedUserDetailsState}
-                                                 setAccessToken={changeAccessTokenState}
-                                                 setRefreshToken={changeRefreshTokenState}
-                                                 setIdToken={changeIdTokenState}
-                                                 changeOpenedComponent={changeCurrOpenedComponent}/>}
+            {isUserConnected() && currDisplayedComp}
+            {!isUserConnected() && <Registration/>}
 
         </div>
     )

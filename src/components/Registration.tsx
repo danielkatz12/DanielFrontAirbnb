@@ -1,4 +1,4 @@
-import {ChangeEvent, ReactElement, useRef, useState} from 'react';
+import {ChangeEvent, useRef, useState} from 'react';
 import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import avatar from '../assets/avatar.jpeg'
@@ -6,23 +6,26 @@ import {faImage} from "@fortawesome/free-solid-svg-icons";
 import {uploadPhoto} from "../services/file-service.ts";
 // import {User, registerUser} from "../services/user-service.ts";
 import {googleSignin, IUser, registrUser} from "../services/user-service.ts";
-import {RegistrationDetails} from "../interfaces/registration-details.ts";
 import UserProfileDetailsForm from "../UserProfileDetailsForm.tsx";
+import {useRecoilState} from "recoil";
+import {
+    accessTokenState,
+    currentDisplayedComponentState,
+    idTokenState,
+    refreshTokenState
+} from "../stateManagement/RecoilState.ts";
 
-interface registerProps {
-    setAccessToken: (newAccessToken: string) => void,
-    setRefreshToken: (newRefreshToken: string) => void,
-    setIdToken: (newIdToken: string) => void
-    setConnectedUserDetails: (connectedUser:RegistrationDetails) => void
-    changeOpenedComponent: (componentToOpen: ReactElement | undefined) => void
-}
-
-function Registration(props: registerProps) {
+function Registration() {
     const [imgSrc, setImgSrc] = useState<File>()
 
     const fileInputRef = useRef<HTMLInputElement>(null)
     const emailInputRef = useRef<HTMLInputElement>(null)
     const passwordInputRef = useRef<HTMLInputElement>(null)
+
+    const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+    const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenState);
+    const [idToken, setIdToken] = useRecoilState(idTokenState);
+    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
     const imgSelected = (e: ChangeEvent<HTMLInputElement>) => {
         console.log(e.target.value)
         if (e.target.files && e.target.files.length > 0) {
@@ -44,10 +47,11 @@ function Registration(props: registerProps) {
                 imgUrl: url
             }
             const res = await registrUser(user)
-            res.accessToken && props.setAccessToken(res.accessToken);
-            res.refreshToken && props.setRefreshToken(res.refreshToken);
+            setAccessToken(res.accessToken);
+            setRefreshToken(res.refreshToken);
             console.log(res)
-            props.changeOpenedComponent(<UserProfileDetailsForm username={res.email} password={"1234"}/>)
+            currDisplayedComp ?? console.log("To delete!!")// todo: to-delete
+            setCurrDisplayedComp(<UserProfileDetailsForm username={res.email} password={"1234"}/>)
         }
     }
 
@@ -70,11 +74,15 @@ function Registration(props: registerProps) {
         console.log(credentialResponse);
         try {
             const res = await googleSignin(credentialResponse)
-            credentialResponse.credential && props.setIdToken(credentialResponse.credential);
-            res.accessToken && props.setAccessToken(res.accessToken);
-            res.refreshToken && props.setRefreshToken(res.refreshToken);
-            console.log(res)
-            props.changeOpenedComponent(<UserProfileDetailsForm username={res.email} password={"1234"}/>)
+            console.log("access token: ", accessToken);//TODO: to-delete
+            console.log("refresh token: ", refreshToken);//TODO: to-delete
+            console.log("id token: ", idToken);//TODO: to-delete
+            setAccessToken(res.accessToken);
+            setRefreshToken(res.refreshToken);
+            setIdToken(credentialResponse.credential);
+            // setTokens({accessToken: res.accessToken, refreshToken: res.refreshToken, idToken: credentialResponse.credential})
+            console.log("response:", res);
+            setCurrDisplayedComp(<UserProfileDetailsForm username={res.email} password={"1234"}/>)
         } catch (e) {
             console.log(e)
         }
