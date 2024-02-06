@@ -24,6 +24,7 @@ function PostsList() {
     }, [])
     return (
         <div>
+            Posts-List
             {posts.map((post, index) => <Post key={index} post={post} />)}
         </div>
     )

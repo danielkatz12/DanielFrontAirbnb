@@ -1,12 +1,23 @@
-import {ChangeEvent, useRef, useState} from 'react';
+import {ChangeEvent, ReactElement, useRef, useState} from 'react';
 import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import avatar from '../assets/avatar.jpeg'
 import {faImage} from "@fortawesome/free-solid-svg-icons";
 import {uploadPhoto} from "../services/file-service.ts";
+// import {User, registerUser} from "../services/user-service.ts";
 import {googleSignin, IUser, registrUser} from "../services/user-service.ts";
+import {RegistrationDetails} from "../interfaces/registration-details.ts";
+import UserProfileDetailsForm from "../UserProfileDetailsForm.tsx";
 
-function Registration() {
+interface registerProps {
+    setAccessToken: (newAccessToken: string) => void,
+    setRefreshToken: (newRefreshToken: string) => void,
+    setIdToken: (newIdToken: string) => void
+    setConnectedUserDetails: (connectedUser:RegistrationDetails) => void
+    changeOpenedComponent: (componentToOpen: ReactElement | undefined) => void
+}
+
+function Registration(props: registerProps) {
     const [imgSrc, setImgSrc] = useState<File>()
 
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -33,15 +44,37 @@ function Registration() {
                 imgUrl: url
             }
             const res = await registrUser(user)
+            res.accessToken && props.setAccessToken(res.accessToken);
+            res.refreshToken && props.setRefreshToken(res.refreshToken);
             console.log(res)
+            props.changeOpenedComponent(<UserProfileDetailsForm username={res.email} password={"1234"}/>)
         }
     }
 
+    // const register = async () => {
+    //     const url = await uploadPhoto(imgSrc!);
+    //     console.log("upload returned:" + url);
+    //     if (emailInputRef.current?.value && passwordInputRef.current?.value) {
+    //         const user: IUser = {
+    //             email: emailInputRef.current?.value,
+    //             password: passwordInputRef.current?.value,
+    //             imgUrl: url
+    //         }
+    //         const res = await registerUser(user)
+    //         console.log(res)
+    //     }
+    // }
+
     const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
-        console.log(credentialResponse)
+        // credentialResponse.credential && saveIdTokenInLocalStorage(credentialResponse.credential);
+        console.log(credentialResponse);
         try {
             const res = await googleSignin(credentialResponse)
+            credentialResponse.credential && props.setIdToken(credentialResponse.credential);
+            res.accessToken && props.setAccessToken(res.accessToken);
+            res.refreshToken && props.setRefreshToken(res.refreshToken);
             console.log(res)
+            props.changeOpenedComponent(<UserProfileDetailsForm username={res.email} password={"1234"}/>)
         } catch (e) {
             console.log(e)
         }
@@ -75,7 +108,8 @@ function Registration() {
             <button type="button" className="btn btn-primary" onClick={register}>Register</button>
 
             <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure}/>
-        </div>)
+        </div>
+    )
 }
 
 export default Registration;
