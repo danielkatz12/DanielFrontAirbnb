@@ -7,11 +7,13 @@ import {
 } from "../services/token-service.ts";
 
 // Interface for UserDetails
-export interface UserDetails {
+export interface UserDetailsData {
     name: string;
-    email?: string;
-    phoneNumber?: string;
+    userId: string
+    contactEmail?: string;
+    contactPhoneNumber?: string;
     age?: number;
+    profileImage?: string;
 }
 
 // // Interface for Tokens
@@ -24,12 +26,13 @@ export interface UserDetails {
 
 
 // Atom for UserDetails
-export const userDetailsState = atom<UserDetails>({
+export const userDetailsState = atom<UserDetailsData>({
     key: 'userDetailsState',
     default: {
         name: '',
-        email: undefined,
-        phoneNumber: undefined,
+        userId: '',
+        contactEmail: undefined,
+        contactPhoneNumber: undefined,
         age: undefined
     }
 });

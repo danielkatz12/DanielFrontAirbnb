@@ -7,7 +7,7 @@ export function getIdTokenFromLocalStorage(): string | null {
 }
 
 export function deleteIdTokenFromLocalStorage(): void {
-    localStorage.delete("idToken");
+    localStorage.removeItem("idToken");
 }
 
 

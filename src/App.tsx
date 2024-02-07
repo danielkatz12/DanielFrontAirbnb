@@ -11,9 +11,6 @@ import {
     deleteAccessTokenFromLocalStorage,
     deleteIdTokenFromLocalStorage,
     deleteRefreshTokenFromLocalStorage,
-    getAccessTokenFromLocalStorage,
-    getIdTokenFromLocalStorage,
-    getRefreshTokenFromLocalStorage,
     saveAccessTokenInLocalStorage,
     saveIdTokenInLocalStorage,
     saveRefreshTokenInLocalStorage
@@ -35,15 +32,15 @@ function App() {
 
     //TODO: MOVE TO OTHER PLACE THIS LOGIC!!
     useEffect(() => {
-        accessToken ? saveAccessTokenInLocalStorage(accessToken) : (getAccessTokenFromLocalStorage() && deleteAccessTokenFromLocalStorage());
+        accessToken ? saveAccessTokenInLocalStorage(accessToken) : deleteAccessTokenFromLocalStorage();
     }, [accessToken]);
 
     useEffect(() => {
-        refreshToken ? saveRefreshTokenInLocalStorage(refreshToken) : (getRefreshTokenFromLocalStorage() && deleteRefreshTokenFromLocalStorage());
+        refreshToken ? saveRefreshTokenInLocalStorage(refreshToken) : deleteRefreshTokenFromLocalStorage();
     }, [refreshToken]);
 
     useEffect(() => {
-        idToken ? saveIdTokenInLocalStorage(idToken) : (getIdTokenFromLocalStorage() && deleteIdTokenFromLocalStorage());
+        idToken ? saveIdTokenInLocalStorage(idToken) : deleteIdTokenFromLocalStorage();
     }, [idToken]);
 
 

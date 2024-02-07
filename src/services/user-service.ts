@@ -4,13 +4,12 @@ import {CredentialResponse} from "@react-oauth/google";
 export interface IUser {
     email: string,
     password?: string,
-    imgUrl?: string,
     _id?: string,
     accessToken?: string,
     refreshToken?: string
 }
 
-export const registrUser = (user: IUser) => {
+export const registerUser = (user: IUser) => {
     return new Promise<IUser>((resolve, reject) => {
         console.log("Registering user...")
         console.log(user)
