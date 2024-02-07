@@ -9,7 +9,7 @@ import {
 // Interface for UserDetails
 export interface UserDetailsData {
     name: string;
-    userId: string
+    userId?: string
     contactEmail?: string;
     contactPhoneNumber?: string;
     age?: number;

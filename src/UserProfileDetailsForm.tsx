@@ -61,14 +61,13 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
         const url = await uploadPhoto(imgSrc!);
         console.log("upload returned:" + url);
 
-        const newUserProfileDetailsForSaving = {
+        const newUserProfileDetailsForSaving: UserDetailsData = {
             name: nameInputState,
             contactEmail: contactEmailInputState,
             contactPhoneNumber: contactPoneNumInputState,
             age: ageInputState,
             profileImage: url,
-            userId:''
-        } as UserDetailsData;
+        }  as UserDetailsData
 
          saveNewUserProfileDetails(newUserProfileDetailsForSaving)
             .then(value => {
