@@ -2,15 +2,16 @@ import {zodResolver} from "@hookform/resolvers/zod"
 import {FieldValues, useForm} from "react-hook-form"
 import z from "zod"
 import {ChangeEvent, useRef, useState} from "react";
-import avatar from "./assets/avatar.jpeg";
+import avatar from "../assets/avatar.jpeg";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faImage} from "@fortawesome/free-solid-svg-icons";
-import {uploadPhoto} from "./services/file-service.ts";
-import {saveNewUserProfileDetails} from "./services/user-profile-details-service.ts";
-import {currentDisplayedComponentState, UserDetailsData, userDetailsState} from "./stateManagement/RecoilState.ts";
+import {updatePhoto, uploadPhoto} from "../services/file-service.ts";
+import {saveNewUserProfileDetails, updateUserProfileDetails} from "../services/user-profile-details-service.ts";
+import {currentDisplayedComponentState, UserDetailsData, userDetailsState} from "../stateManagement/RecoilState.ts";
 import {useRecoilState} from "recoil";
 import PostsList from "./PostsList.tsx";
-import Registration from "./components/Registration.tsx";
+import Registration from "./Registration.tsx";
+import MyProfile from "./MyProfile.tsx";
 
 
 const schema = z.object({
@@ -46,7 +47,7 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
         }
     }
     const selectImg = () => {
-        console.log("Selecting image...")
+        console.log("Selecting profile image...")
         fileInputRef.current?.click()
     }
 
@@ -54,24 +55,46 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>({resolver: zodResolver(schema)})
 
     const onSubmit = async (data: FieldValues) => {
-        console.log(userProfileDetails && currDisplayedComp)//todo: to-delete
-        console.log("data: ", data)//todo: to-delete
-        console.log(props);//todo: to-delete
+        // console.log(userProfileDetails && currDisplayedComp)//todo: to-delete
+        // console.log("data: ", data)//todo: to-delete
+        // console.log(props);//todo: to-delete
 
-        const url = await uploadPhoto(imgSrc!);
-        console.log("upload returned:" + url);
-
-        const newUserProfileDetailsForSaving: UserDetailsData = {
+        let userProfileDetailsToForSaving: UserDetailsData = {
             name: nameInputState,
             contactEmail: contactEmailInputState,
             contactPhoneNumber: contactPoneNumInputState,
             age: ageInputState,
-            profileImage: url,
-        }  as UserDetailsData
+        } as UserDetailsData;
 
-         saveNewUserProfileDetails(newUserProfileDetailsForSaving)
+        let url: string | undefined = undefined;
+        //updateing the photo
+        if (imgSrc && userProfileDetails.profileImage) {
+            userProfileDetailsToForSaving = {...userProfileDetailsToForSaving, user: userProfileDetails.user} as UserDetailsData;
+            try {
+                url = await updatePhoto(userProfileDetails.profileImage, imgSrc);
+                console.log("Image updated successfully. New URL:", url);
+            } catch (error) {
+                console.error("Error updating the image:", error);
+            }
+        } else {
+            url = imgSrc ? await uploadPhoto(imgSrc!) : undefined;
+            console.log("uploaded image url:" + url);
+        }
+
+        userProfileDetailsToForSaving = {...userProfileDetailsToForSaving, profileImage: url} as UserDetailsData;
+
+
+        !props.isInRegistrationMode && updateUserProfileDetails({...userProfileDetailsToForSaving, user: userProfileDetails.user}).then(value => {
+            setUserProfileDetails(value);
+            setCurrDisplayedComp(<MyProfile userProfileDetails={value}/>);
+        }).catch((error) => {
+            console.log(error);
+        })
+
+
+        props.isInRegistrationMode && saveNewUserProfileDetails(userProfileDetailsToForSaving)
             .then(value => {
-                console.log("on then: ", value);
+                console.log(value);
                 setUserProfileDetails(value);
                 setCurrDisplayedComp(<PostsList/>);
             }).catch(reason => {
@@ -79,7 +102,6 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
                 //todo:2- delete user from DB and clear all local storage and tokens states OR continu anyway and check later
                 //todo: return to registration comp or postlist comp
                 setCurrDisplayedComp(<Registration/>);
-                console.log("lll")
             })
     }
 
@@ -87,8 +109,10 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="vstack gap-3 col-md-7 mx-auto">
             <h1>My Profile</h1>
             <div className="d-flex justify-content-center position-relative">
-                <img src={imgSrc ? URL.createObjectURL(imgSrc) : avatar} style={{height: "230px", width: "230px"}}
-                     className="img-fluid"/>
+                <img
+                    src={imgSrc ? URL.createObjectURL(imgSrc) : (userProfileDetails.profileImage ? userProfileDetails.profileImage : avatar)}
+                    alt={avatar} style={{height: "230px", width: "230px"}}
+                    className="img-fluid"/>
                 <button type="button" className="btn position-absolute bottom-0 end-0" onClick={selectImg}>
                     <FontAwesomeIcon icon={faImage} className="fa-xl"/>
                 </button>
