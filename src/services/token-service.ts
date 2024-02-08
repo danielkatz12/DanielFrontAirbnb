@@ -39,3 +39,15 @@ export function deleteRefreshTokenFromLocalStorage(): void {
 export function clearAllFromLocalStorage(): void {
     localStorage.clear();
 }
+
+export function saveUserIDInLocalStorage(userId: string): void {
+    localStorage.setItem("userId", userId);
+}
+
+export function getUserIDFromLocalStorage(): string | null {
+    return localStorage.getItem("userId");
+}
+
+export function deleteUserIDInLocalStorage(): void {
+    localStorage.removeItem("userId");
+}
