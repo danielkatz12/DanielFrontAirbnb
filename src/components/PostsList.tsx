@@ -1,48 +1,45 @@
-// // import ListGroup from './ListGroup'
-// import { useEffect, useState } from 'react'
-// import Post, { IPost } from './Post'
-// // import Alert from './Alert'
-// import postService, { CanceledError } from "./services/posts-service"
-
-// function PostList() {
-//     const [posts, setPosts] = useState<IPost[]>([])
-//     const [error, setError] = useState()
-//     useEffect(() => {
-//         const { req, abort } = postService.getAllPosts()
-//         req.then((res) => {
-//             setPosts(res.data)
-//         }).catch((err) => {
-//             console.log(err)
-//             if (err instanceof CanceledError) return
-//             setError(err.message)
-//         })
-//         return () => {
-//             abort()
-//         }
-//     }, [])
+import {useEffect} from "react"
+import PostItem from "./PostItem.tsx"
+import {useRecoilState} from "recoil";
+import {currentDisplayedComponentState, fullPostsState, userDetailsState} from "../stateManagement/RecoilState.ts";
+import PostForm from "./PostForm.tsx";
+import {getAllFullPosts} from "../services/posts-service.ts";
+import MyProfile from "./MyProfile.tsx";
 
 
-//     // const [alertVisibility, setAlertVisibvility] = useState(false)
+interface PostData {
+    title: string;
+    message: string;
+    owner: string;
+}
 
-//     const handleRemove = (key: number) => {
-//         console.log('remove', key)
-//         const newPosts = posts.filter((post, index) => index !== key)
-//         setPosts(newPosts)
-//     }
-//     return (
-//         <>
-//             {/* {alertVisibility && <Alert onDismiss={() => { setAlertVisibvility(false) }}>This is my alert</Alert>}
-//       <button type="button" className="btn btn-primary" onClick={() => setAlertVisibvility(!alertVisibility)}>Toggle Alert</button> */}
+function PostsList() {
+    const [posts, setPosts] = useRecoilState(fullPostsState);
+    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
 
-//             {error && <p className='text-danger'>{error}</p>}
-//             {posts.map((post, index) =>
-//                 <div className="p-4" key={index}>
-//                     <Post post={post} onRemoveCbk={() => { handleRemove(index) }} />
-//                 </div>
-//             )}
-//         </>
 
-//     )
-// }
+    useEffect(() => {
+        console.log("getAllPost request")
+        getAllFullPosts().req.then(res => {
+            console.log("Update posts list")
+            console.log(res.data);
+            setPosts(res.data);
+        }).catch((error) => {
+            console.log("there was a problem to get  posts list from server...")
+        })
+        return () => {
+            console.log("clean up")
+        }
+    }, [])
+    return (
+        <div>
+            <div>
+                Posts-List
+                {posts.map((post, index) => <div><PostItem key={index} post={post}/></div>)}
 
-// export default PostList
+            </div>
+        </div>
+    )
+}
+
+export default PostsList
