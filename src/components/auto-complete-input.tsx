@@ -3,6 +3,7 @@ import {Form, FormControl, ListGroup} from 'react-bootstrap';
 
 interface AutoProps {
     suggestions: string[]
+    onChooseSuggestion: (chooseSuggestion:string) => void;
 }
 
 const AutocompleteInput = (props: AutoProps) => {
@@ -12,11 +13,14 @@ const AutocompleteInput = (props: AutoProps) => {
     const handleChange = (e: { target: { value: string }; }) => {
         const searchTerm = e.target.value;
         setSearchTerm(searchTerm);
+        props.onChooseSuggestion(searchTerm);
         const filteredSuggestions: string[] = props.suggestions.filter((suggestion) =>
             suggestion.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredSuggestions(filteredSuggestions);
     };
+
+
 
     const handleSelectSuggestion = (suggestion: string) => {
         setSearchTerm(suggestion);
