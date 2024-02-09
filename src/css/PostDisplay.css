@@ -1,0 +1,277 @@
+.full-post-details-container {
+    max-width: 800px; /* Set a maximum width for the container */
+    margin: 0 auto; /* Center the container horizontally */
+    display: flex;
+    align-items: center;
+    padding: 20px; /* Add padding for spacing */
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*padding: 20px; !* Add padding for spacing *!*/
+}
+
+.profile-image {
+    width: 50px; /* Decrease size of profile image */
+    height: 50px; /* Decrease size of profile image */
+    border-radius: 50%; /* Make profile image round */
+    margin-right: 20px; /* Add spacing between profile image and post details */
+}
+
+.post-details {
+    flex-grow: 1; /* Allow post details to grow and fill remaining space */
+}
+
+.post-card {
+    margin: 0; /* Reset margin to remove default Card margin */
+    position: relative; /* Position relative for absolute positioning of image */
+}
+
+.card-image-container {
+    position: absolute; /* Position the image container */
+    top: 50%; /* Align the image container vertically */
+    right: 0; /* Position the image container on the right side */
+    transform: translateY(-50%); /* Center the image container vertically */
+    overflow: hidden;
+    width: 240px; /* Adjust width of container to make image slightly bigger */
+    height: 185px; /* Adjust height of container to maintain aspect ratio */
+    margin-right: 10px; /* Add margin to the right of the image */
+}
+
+.card-image {
+    width: 100%; /* Make image fill container width */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.post-card .card-body {
+    padding: 10px; /* Add padding for spacing */
+}
+
+.post-card .card-title {
+    margin-bottom: 10px; /* Add margin below title for spacing */
+}
+
+
+
+
+/*.full-post-details-container {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    padding: 20px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.profile-image {*/
+/*    width: 50px; !* Decrease size of profile image *!*/
+/*    height: 50px; !* Decrease size of profile image *!*/
+/*    border-radius: 50%; !* Make profile image round *!*/
+/*    margin-right: 20px; !* Add spacing between profile image and post details *!*/
+/*}*/
+
+/*.post-details {*/
+/*    flex-grow: 1; !* Allow post details to grow and fill remaining space *!*/
+/*}*/
+
+/*.post-card {*/
+/*    margin: 0; !* Reset margin to remove default Card margin *!*/
+/*    position: relative; !* Position relative for absolute positioning of image *!*/
+/*}*/
+
+/*.card-image-container {*/
+/*    position: absolute; !* Position the image container *!*/
+/*    top: 50%; !* Align the image container vertically *!*/
+/*    right: 0; !* Position the image container on the right side *!*/
+/*    transform: translateY(-50%); !* Center the image container vertically *!*/
+/*    overflow: hidden;*/
+/*    width: 150px; !* Adjust width of container to make image smaller *!*/
+/*    height: 100px; !* Adjust height of container to maintain aspect ratio *!*/
+/*}*/
+
+/*.card-image {*/
+/*    width: 100%; !* Make image fill container width *!*/
+/*    height: auto; !* Maintain aspect ratio *!*/
+/*}*/
+
+/*.post-card .card-body {*/
+/*    padding: 10px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.post-card .card-title {*/
+/*    margin-bottom: 10px; !* Add margin below title for spacing *!*/
+/*}*/
+
+
+
+
+
+
+/*.full-post-details-container {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    padding: 20px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.profile-image {*/
+/*    width: 50px; !* Decrease size of profile image *!*/
+/*    height: 50px; !* Decrease size of profile image *!*/
+/*    border-radius: 50%; !* Make profile image round *!*/
+/*    margin-right: 20px; !* Add spacing between profile image and post details *!*/
+/*}*/
+
+/*.post-details {*/
+/*    flex-grow: 1; !* Allow post details to grow and fill remaining space *!*/
+/*}*/
+
+/*.post-card {*/
+/*    margin: 0; !* Reset margin to remove default Card margin *!*/
+/*    position: relative; !* Position relative for absolute positioning of image *!*/
+/*}*/
+
+/*.card-image-container {*/
+/*    position: relative;*/
+/*    overflow: hidden;*/
+/*    width: 150px; !* Adjust width of container to make image smaller *!*/
+/*    height: 100px; !* Adjust height of container to maintain aspect ratio *!*/
+/*}*/
+
+/*.card-image {*/
+/*    width: 100%; !* Make image fill container width *!*/
+/*    height: auto; !* Maintain aspect ratio *!*/
+/*}*/
+
+/*.post-card .card-body {*/
+/*    padding: 10px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.post-card .card-title {*/
+/*    margin-bottom: 10px; !* Add margin below title for spacing *!*/
+/*}*/
+
+
+
+/*.full-post-details-container {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    padding: 20px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.profile-image {*/
+/*    width: 50px; !* Decrease size of profile image *!*/
+/*    height: 50px; !* Decrease size of profile image *!*/
+/*    border-radius: 50%; !* Make profile image round *!*/
+/*    margin-right: 20px; !* Add spacing between profile image and post details *!*/
+/*}*/
+
+/*.post-details {*/
+/*    flex-grow: 1; !* Allow post details to grow and fill remaining space *!*/
+/*}*/
+
+/*.post-card {*/
+/*    margin: 0; !* Reset margin to remove default Card margin *!*/
+/*    position: relative; !* Position relative for absolute positioning of image *!*/
+/*}*/
+
+/*.card-image-container {*/
+/*    position: relative;*/
+/*    overflow: hidden;*/
+/*}*/
+
+/*.card-image {*/
+/*    width: 100%; !* Make image fill container width *!*/
+/*    height: auto; !* Maintain aspect ratio *!*/
+/*}*/
+
+/*.post-card .card-body {*/
+/*    padding: 10px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.post-card .card-title {*/
+/*    margin-bottom: 10px; !* Add margin below title for spacing *!*/
+/*}*/
+
+
+
+
+
+
+
+
+
+
+
+
+/*.profile-image {*/
+/*    width: 50px; !* Decrease size of profile image *!*/
+/*    height: 50px; !* Decrease size of profile image *!*/
+/*    border-radius: 50%; !* Make profile image round *!*/
+/*    margin-right: 20px; !* Add spacing between profile image and post details *!*/
+
+/*}*/
+/*.post-apartment-image-container {*/
+/*    width: 150px; !* Adjust width of container to make image smaller *!*/
+/*    height: 100px; !* Adjust height of container to maintain aspect ratio *!*/
+/*    overflow: hidden;*/
+/*    margin-left: auto; !* Push the post-apartment image container to the right *!*/
+
+/*}*/
+/*.post-apartment-image {*/
+/*    width: 100%; !* Make image fill container width *!*/
+/*    height: auto; !* Maintain aspect ratio *!*/
+
+/*}*/
+/*.post-card {*/
+/*    margin: 0; !* Reset margin to remove default Card margin *!*/
+/*    position: relative; !* Position relative for absolute positioning of image *!*/
+
+/*}*/
+/*.card-image-container {*/
+/*    position: relative;*/
+/*    overflow: hidden;*/
+
+/*}*/
+/*.card-image {*/
+/*    width: 100%; !* Make image fill container width *!*/
+/*    height: auto; !* Maintain aspect ratio *!*/
+
+/*}*/
+/*.post-card .card-body {*/
+/*    padding: 10px; !* Add padding for spacing *!*/
+
+/*}*/
+/*.post-card .card-title {*/
+/*    margin-bottom: 10px; !* Add margin below title for spacing *!*/
+
+
+
+
+/*}*/
+
+
+
+
+
+/*.full-post-details-container {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    padding: 20px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.profile-image {*/
+/*    width: 50px; !* Decrease size of profile image *!*/
+/*    height: 50px; !* Decrease size of profile image *!*/
+/*    border-radius: 50%; !* Make profile image round *!*/
+/*    margin-right: 20px; !* Add spacing between profile image and post details *!*/
+/*}*/
+
+/*.post-details {*/
+/*    flex-grow: 1; !* Allow post details to grow and fill remaining space *!*/
+/*}*/
+
+/*.post-card {*/
+/*    margin: 0; !* Reset margin to remove default Card margin *!*/
+/*}*/
+
+/*.post-card .card-body {*/
+/*    padding: 10px; !* Add padding for spacing *!*/
+/*}*/
+
+/*.post-card .card-title {*/
+/*    margin-bottom: 10px; !* Add margin below title for spacing *!*/
+/*}*/

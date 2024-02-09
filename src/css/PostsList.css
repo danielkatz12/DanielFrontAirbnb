@@ -1,0 +1,39 @@
+/* styles.css */
+.background {
+    background-image: url('path/to/your/background/image.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    padding: 50px 0; /* Add padding to prevent content from touching the edges */
+}
+
+.post-item {
+    width: 250px;
+    border: 1px solid #dee2e6; /* Add a subtle border */
+    border-radius: 10px; /* Add rounded corners */
+    transition: transform 0.3s ease; /* Add a smooth transition on hover */
+}
+
+.post-item:hover {
+    transform: translateY(-5px); /* Add a slight lift effect on hover */
+}
+
+.post-item-image {
+    height: 150px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.post-item .card-body {
+    background-color: #f8f9fa; /* Add a light background color to the card body */
+}
+
+.post-item .card-title {
+    font-size: 1.2rem; /* Increase the font size of the title */
+    margin-bottom: 10px;
+}
+
+.post-item .card-text {
+    font-size: 0.9rem; /* Decrease the font size of the text */
+}

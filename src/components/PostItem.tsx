@@ -3,7 +3,8 @@ import {currentDisplayedComponentState, UserDetailsData} from "../stateManagemen
 import avatar from "../assets/avatar.jpeg";
 import {useRecoilState} from "recoil";
 import PostDisplay from "./PostDisplay.tsx";
-import PostForm from "./PostForm.tsx";
+import {Card} from "react-bootstrap";
+
 
 export interface PostItemData {
     _id: string
@@ -15,7 +16,6 @@ export interface PostItemData {
     pricePerDay: number;
     user: IUser & { userProfileDetails: UserDetailsData };
     reviewCounts: number
-    //userProfileDetails:UserDetailsData;
 }
 
 interface PostProps {
@@ -26,23 +26,23 @@ function PostItem({post}: PostProps) {
     const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
 
     return (
-        <div>
-            <div>
-                <h1>owner: {post.user.userProfileDetails.name} </h1>
-                <h2>Price($): {post.pricePerDay}</h2>
-                <h2>City: {post.city}</h2>
-                <h2>Street number: {post.street}</h2>
-                <h2>Street number: {post.streetNumber}</h2>
-                <h2>Reviews number: {post.reviewCounts}</h2>
-                <h2>Discription: {post.description}</h2>
-                <img src={post.imageUrl} alt={avatar}/>
-            </div>
-            <div className="d-flex justify-content-center position-relative">
-                <button type="button" onClick={() => setCurrDisplayedComp(<PostDisplay key={post._id} post={post}/>)}
-                        className="btn btn btn-primary">Display Post
-                </button>
-            </div>
-        </div>
+        <Card onClick={() => setCurrDisplayedComp(<PostDisplay key={post._id} post={post}/>)}
+              className={"post-item"} style={{width: '250px'}}>
+            <Card.Img variant="top" src={post.imageUrl} alt={avatar}
+                      className={"post-item-image"} style={{height: '150px', objectFit: 'cover'}}/>
+            <Card.Body>
+                <Card.Title>{post.user.userProfileDetails.name}</Card.Title>
+                <Card.Text>
+                    <strong>Price:</strong> ${post.pricePerDay}
+                    <br/>
+                    <strong>Location:</strong> {post.streetNumber} {post.street}, {post.city}
+                    <br/>
+                    <strong>Reviews:</strong> {post.reviewCounts}
+                    <br/>
+                    <strong>Description:</strong> {post.description}
+                </Card.Text>
+            </Card.Body>
+        </Card>
     )
 }
 

@@ -1,0 +1,9 @@
+/* styles.css */
+.post-item {
+    width: 250px; /* Set the width of each PostItem */
+}
+
+.post-item-image {
+    height: 150px; /* Set the height of the image in each PostItem */
+    object-fit: cover; /* Ensure the image covers the entire area */
+}

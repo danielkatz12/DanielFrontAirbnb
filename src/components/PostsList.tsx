@@ -1,10 +1,10 @@
 import {useEffect} from "react"
 import PostItem from "./PostItem.tsx"
 import {useRecoilState} from "recoil";
-import {currentDisplayedComponentState, fullPostsState, userDetailsState} from "../stateManagement/RecoilState.ts";
-import PostForm from "./PostForm.tsx";
+import {currentDisplayedComponentState, fullPostsState} from "../stateManagement/RecoilState.ts";
 import {getAllFullPosts} from "../services/posts-service.ts";
-import MyProfile from "./MyProfile.tsx";
+import {Col, Container, Row} from "react-bootstrap";
+import '../css/PostsList.css';
 
 
 interface PostData {
@@ -32,12 +32,16 @@ function PostsList() {
         }
     }, [])
     return (
-        <div>
-            <div>
-                Posts-List
-                {posts.map((post, index) => <div><PostItem key={index} post={post}/></div>)}
-
-            </div>
+        <div className="background">
+            <Container>
+                <Row xs={1} md={2} lg={3} xl={4} className="g-4">
+                    {posts.map((post) => (
+                        <Col key={post._id}>
+                            <PostItem key={post._id} post={post}/>
+                        </Col>
+                    ))}
+                </Row>
+            </Container>
         </div>
     )
 }

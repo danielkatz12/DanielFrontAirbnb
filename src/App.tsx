@@ -1,5 +1,4 @@
 import {useEffect} from "react";
-import Registration from "./components/Registration.tsx";
 import {useRecoilState} from "recoil";
 import {
     accessTokenState,
@@ -17,9 +16,10 @@ import {
     saveRefreshTokenInLocalStorage
 } from "./services/token-service.ts";
 import PostsList from "./components/PostsList.tsx";
-import PostForm from "./components/PostForm.tsx";
-import MyProfile from "./components/MyProfile.tsx";
 import {getMyUserProfileDetails} from "./services/user-profile-details-service.ts";
+import MyProfile from "./components/MyProfile.tsx";
+import PostForm from "./components/PostForm.tsx";
+import Registration from "./components/Registration.tsx";
 
 
 function App() {
@@ -27,8 +27,8 @@ function App() {
     const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
     const [userProfileDetails, setUserProfileDetails] = useRecoilState(userDetailsState);
     const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-    const [refreshToken,setRefreshToken] = useRecoilState(refreshTokenState);
-    const [idToken,setIdToken] = useRecoilState(idTokenState);
+    const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenState);
+    const [idToken, setIdToken] = useRecoilState(idTokenState);
 
 
     const logout = () => {
@@ -61,6 +61,22 @@ function App() {
     useEffect(() => {
         setCurrDisplayedComp(<PostsList/>)
     }, []);
+
+
+    // return (
+    //     // <Router>
+    //     //     <div>
+    //     //         <NavBar/>
+    //     //         <Route path="/all-posts" Component={PostsList}/>
+    //     //         {/*<Route path="/my-profile" Component={MyProfile}/>*/}
+    //     //         <Route path="/all-my-posts" Component={AllMyPostsList}/>
+    //     //         <Route path="/add-new-post" Component={PostForm}/>
+    //     //         <Route path="/login" Component={UserLogin}/>
+    //     //         {/*<Route path="/logout" component={Logout}/>*/}
+    //     //         {currDisplayedComp}
+    //     //     </div>
+    //     // </Router>
+    // );
 
     return (
         <div>
