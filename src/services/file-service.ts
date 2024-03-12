@@ -1,4 +1,5 @@
-import apiClient, {axiosConfig} from "./api-client";
+import apiClient from "./api-client";
+import {AxiosError} from "axios";
 
 interface IUpoloadResponse {
     url: string;
@@ -45,6 +46,8 @@ export const updatePhoto = async (oldImageUrl: string, newImageFile: File) => {
         console.log("Image updated successfully");
         return newImageUrl; // Resolve with the new image URL
     } catch (error) {
+        if (error instanceof AxiosError  && error.response && error.response.status === 404)
+            throw new Error("404");
         console.error("Failed to update the image:", error);
         throw error; // Propagate the error to the caller
     }
