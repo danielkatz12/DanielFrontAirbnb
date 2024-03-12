@@ -17,9 +17,14 @@ import {
 } from "./services/token-service.ts";
 import PostsList from "./components/PostsList.tsx";
 import {getMyUserProfileDetails} from "./services/user-profile-details-service.ts";
+import {Route, Routes} from "react-router-dom";
+import Registration from "./components/Registration.tsx";
+import UserLogin from "./components/UserLogin.tsx";
 import MyProfile from "./components/MyProfile.tsx";
 import PostForm from "./components/PostForm.tsx";
-import Registration from "./components/Registration.tsx";
+import NavBar from "./components/NavBar.tsx";
+import PostDisplay from "./components/PostDisplay.tsx";
+import UserProfileDetailsForm from "./components/UserProfileDetailsForm.tsx";
 
 
 function App() {
@@ -31,20 +36,22 @@ function App() {
     const [idToken, setIdToken] = useRecoilState(idTokenState);
 
 
-    const logout = () => {
-        clearAllFromLocalStorage();
-        setAccessToken(undefined);
-        setRefreshToken(undefined);
-        setIdToken(undefined);
-        alert("user is now Logout")
-    }
+    // const logout = () => {
+    //     clearAllFromLocalStorage();
+    //     setAccessToken(undefined);
+    //     setRefreshToken(undefined);
+    //     setIdToken(undefined);
+    //     alert("user is now Logout")
+    // }
 
     //TODO: MOVE TO OTHER PLACE THIS LOGIC!!
     useEffect(() => {
+        console.log("useEffect saveAccessTokenInLocalStorage")
         accessToken && saveAccessTokenInLocalStorage(accessToken);
     }, [accessToken]);
 
     useEffect(() => {
+        console.log("useEffect saveRefreshTokenInLocalStorage")
         refreshToken && saveRefreshTokenInLocalStorage(refreshToken);
     }, [refreshToken]);
 
@@ -55,13 +62,32 @@ function App() {
         getAccessTokenFromLocalStorage() && getUserIDFromLocalStorage() &&
         getMyUserProfileDetails(getUserIDFromLocalStorage()!)
             .then((value) => setUserProfileDetails(value))
-            .catch((error) => (console.log("failed to gey the uder details from server")))
+            .catch((error) => (console.log("failed to gey the user details from server")))
     }, []);
 
     useEffect(() => {
         setCurrDisplayedComp(<PostsList/>)
     }, []);
 
+
+    return (
+        <div>
+            <NavBar/>
+            {/*{currDisplayedComp}*/}
+            <Routes>
+                <Route path={"/"} element={<PostsList/>}/>
+                <Route path={"/register"} element={<Registration/>}/>
+                <Route path={"/login"} element={<UserLogin/>}/>
+                <Route path={"/register/user-details"} element={<UserProfileDetailsForm isInRegistrationMode={true}/>}/>
+                <Route path={"/my-profile"} element={<MyProfile userProfileDetails={userProfileDetails}/>}/>
+                <Route path={"/user-details"} element={<UserProfileDetailsForm isInRegistrationMode={false}/>}/>
+                <Route path={"/add-post"} element={<PostForm/>}/>
+                {getAccessTokenFromLocalStorage() &&
+                    <Route path={"/my-posts"} element={<PostsList filterByUserId={getUserIDFromLocalStorage()!}/>}/>}
+                {/*<Route path={"/logout"} handle={() => {logout()}}/>*/}
+            </Routes>
+        </div>
+    );
 
     // return (
     //     // <Router>
@@ -78,35 +104,35 @@ function App() {
     //     // </Router>
     // );
 
-    return (
-        <div>
-            <div className="d-flex justify-content-center position-relative">
-                {accessToken &&
-                    <div>
-                        <button type="button" onClick={() => setCurrDisplayedComp(<PostForm/>)}
-                                className="btn btn btn-primary">Add Post
-                        </button>
-                        <button type="button"
-                                onClick={() => setCurrDisplayedComp(<MyProfile userProfileDetails={userProfileDetails}/>)}
-                                className="btn btn btn-primary">My Profile
-                        </button>
-                        <button type="button" onClick={logout}
-                                className="btn btn btn-outline-danger">Logout
-                        </button>
-                    </div>
-                }
-                {(!accessToken) &&
-                    <button type="button" onClick={() => setCurrDisplayedComp(<Registration/>)}
-                            className="btn btn btn-primary">Registration
-                    </button>}
-            </div>
-            <div>
-                {currDisplayedComp}
-
-            </div>
-
-        </div>
-    )
+    //  return (
+    //     <div>
+    //         <div className="d-flex justify-content-center position-relative">
+    //             {accessToken &&
+    //                 <div>
+    //                     <button type="button" onClick={() => setCurrDisplayedComp(<PostForm/>)}
+    //                             className="btn btn btn-primary">Add Post
+    //                     </button>
+    //                     <button type="button"
+    //                             onClick={() => setCurrDisplayedComp(<MyProfile userProfileDetails={userProfileDetails}/>)}
+    //                             className="btn btn btn-primary">My Profile
+    //                     </button>
+    //                     <button type="button" onClick={logout}
+    //                             className="btn btn btn-outline-danger">Logout
+    //                     </button>
+    //                 </div>
+    //             }
+    //             {(!accessToken) &&
+    //                 <button type="button" onClick={() => setCurrDisplayedComp(<Registration/>)}
+    //                         className="btn btn btn-primary">Registration
+    //                 </button>}
+    //         </div>
+    //         <div>
+    //             {currDisplayedComp}
+    //
+    //         </div>
+    //
+    //     </div>
+    // )
 }
 
 export default App

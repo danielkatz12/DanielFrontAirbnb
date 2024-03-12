@@ -1,0 +1,17 @@
+.App {
+    text-align: center; /* Center the content */
+}
+
+.custom-navbar {
+    display: inline-block; /* Make sure Navbar is displayed as inline-block */
+    width: auto; /* Set width to auto to fit content */
+    margin: 0 auto; /* Center the Navbar */
+}
+
+.custom-navbar .navbar-collapse {
+    justify-content: center; /* Center the Navbar links */
+}
+
+.custom-navbar .nav-link {
+    margin: 0 10px; /* Add margin between Navbar links */
+}
