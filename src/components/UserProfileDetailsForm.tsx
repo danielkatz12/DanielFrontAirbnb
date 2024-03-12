@@ -55,9 +55,6 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
     const {register, handleSubmit, formState: {errors}} = useForm<FormData>({resolver: zodResolver(schema)})
 
     const onSubmit = async (data: FieldValues) => {
-        // console.log(userProfileDetails && currDisplayedComp)//todo: to-delete
-        // console.log("data: ", data)//todo: to-delete
-        // console.log(props);//todo: to-delete
 
         let userProfileDetailsToForSaving: UserDetailsData = {
             name: nameInputState,
@@ -74,7 +71,16 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
                 url = await updatePhoto(userProfileDetails.profileImage, imgSrc);
                 console.log("Image updated successfully. New URL:", url);
             } catch (error) {
-                console.error("Error updating the image:", error);
+                if (error instanceof Error && error.message === "404") {
+                    try {
+                       url = await uploadPhoto(imgSrc!)
+                    } catch (e){
+                        console.error("Error updating the image:", error);
+                    }
+                } else {
+                    console.error("Error updating the image:", error);
+                }
+
             }
         } else {
             url = imgSrc ? await uploadPhoto(imgSrc!) : undefined;
