@@ -1,4 +1,4 @@
-import {atom} from 'recoil';
+import {atom, useSetRecoilState} from 'recoil';
 import {ReactElement} from 'react';
 import {
     getAccessTokenFromLocalStorage,
@@ -6,6 +6,7 @@ import {
     getRefreshTokenFromLocalStorage
 } from "../services/token-service.ts";
 import {PostItemData} from "../components/PostItem.tsx";
+import {UserReview} from "../services/reviews-service.ts";
 
 
 // Interface for UserDetails
@@ -53,27 +54,10 @@ export const currentDisplayedComponentState = atom<ReactElement | null>({
 });
 export const fullPostsState = atom<PostItemData[]>({
     key: 'fullPostsState',
-    default: [
-        {
-            _id: "65c3e6ea029f42b7e026c848",
-            city: "New York",
-            street: "Broadway",
-            streetNumber: 123,
-            description: "Spacious apartment in the heart of the city",
-            imageUrl: "http://example.com/image.jpg",
-            pricePerDay: 150,
-            user: {
-                _id: "65c35915d41fa5c482a9034c",
-                email: "danielkatz1212@gmail.com",
-                userProfileDetails: {
-                    name: "John Doe",
-                    profileImage: "http://example.com/profile.jpg",
-                    contactEmail: "john.doe@example.com",
-                    contactPhoneNumber: 1234567890,
-                    age: 30
-                }
-            },
-            "reviewCounts": 1
-        }
-    ]
+    default: []
+});
+
+export const allPostsReviews  = atom<UserReview[]>({
+   key: 'allPostsReviews',
+    default: []
 });

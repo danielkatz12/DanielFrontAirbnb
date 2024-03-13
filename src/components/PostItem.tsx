@@ -4,6 +4,8 @@ import avatar from "../assets/avatar.jpeg";
 import {useRecoilState} from "recoil";
 import PostDisplay from "./PostDisplay.tsx";
 import {Card} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
+import PostDisplayDialog from "./PostDisplayDialog.tsx";
 
 
 export interface PostItemData {
@@ -19,14 +21,18 @@ export interface PostItemData {
 }
 
 interface PostProps {
-    post: PostItemData
+    post: PostItemData,
+    onClickPostItem: (post: PostItemData) => void
 }
 
-function PostItem({post}: PostProps) {
+function PostItem({post, onClickPostItem}: PostProps) {
     const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
+    const navigate = useNavigate();
 
     return (
-        <Card onClick={() => setCurrDisplayedComp(<PostDisplay key={post._id} post={post}/>)}
+        //<Card onClick={() => navigate('/display-post', )}
+        <Card onClick={() => onClickPostItem(post)}
+            //        <Card onClick={() => setCurrDisplayedComp(<PostDisplay key={post._id} post={post}/>)}
               className={"post-item"} style={{width: '250px'}}>
             <Card.Img variant="top" src={post.imageUrl} alt={avatar}
                       className={"post-item-image"} style={{height: '150px', objectFit: 'cover'}}/>
@@ -39,7 +45,7 @@ function PostItem({post}: PostProps) {
                     <br/>
                     <strong>Reviews:</strong> {post.reviewCounts}
                     <br/>
-                    <strong>Description:</strong> {post.description}
+                    <strong>Description:</strong> {post.description}`
                 </Card.Text>
             </Card.Body>
         </Card>

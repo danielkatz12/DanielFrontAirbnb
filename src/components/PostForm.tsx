@@ -15,6 +15,7 @@ import PostItem, {PostItemData} from "./PostItem.tsx";
 import PostDisplay from "./PostDisplay.tsx";
 import AutocompleteInput from "./auto-complete-input.tsx";
 import {getAllCities} from "../services/gov-service.ts";
+import {useNavigate} from "react-router-dom";
 
 
 const schema = z.object({
@@ -29,12 +30,16 @@ type FormData = z.infer<typeof schema>
 
 export interface PostProps {
     postToEdit?: PostDto;
+    onClosePostForm?: () => void
 }
 
 
 function PostForm(props: PostProps) {
+    console.log("In Post Form...")
     const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
     const [allFullPosts, setAllFullPosts] = useRecoilState(fullPostsState);
+
+    const navigate = useNavigate();
 
     const [city, setCity] = useState<string | undefined>(props.postToEdit ? props.postToEdit.city : '')
     const [street, setStreet] = useState<string | undefined>(props.postToEdit ? props.postToEdit.street : '')
@@ -82,7 +87,7 @@ function PostForm(props: PostProps) {
                     //postToAddOrUpdate = {...postToAddOrUpdate, imageUrl: url} as PostItemData;
                     console.log("Image updated successfully. New URL:", url);
                 } catch (error) {
-                    console.error("Error updating the image:", error);
+                    console.error("Error updating the image:", error);//todo: alert??
                     url = allFullPosts[myPostItemIndex].imageUrl;
                 }
             }
@@ -103,7 +108,8 @@ function PostForm(props: PostProps) {
                     const tempAllFullPosts = {...allFullPosts};
                     tempAllFullPosts[myPostItemIndex] = {...myPostItem};
                     setAllFullPosts(tempAllFullPosts);
-                    setCurrDisplayedComp(<PostDisplay post={myPostItem}/>);
+                    props.onClosePostForm && props.onClosePostForm();
+                    setCurrDisplayedComp(<PostDisplay post={myPostItem}/>);//todo:to delete???????? how i navigate to my dialog??
                 }).catch(reason => {
                 console.log("Failed to update post: ", reason);//todo:1- alert
             })
@@ -122,7 +128,8 @@ function PostForm(props: PostProps) {
             insertPost(postToAddOrUpdate)
                 .then(value => {
                     console.log("on then: ", value);
-                    setCurrDisplayedComp(<PostsList/>);
+                    navigate('/');
+                    setCurrDisplayedComp(<PostsList/>);//todo:to delete
                 }).catch(reason => {
                 console.log("on error: ", reason);//todo:1- alert
             })
@@ -181,7 +188,7 @@ function PostForm(props: PostProps) {
             </div>
             <div className="d-flex justify-content-center position-relative">
                 <button type="submit" className="btn btn-primary">Submit</button>
-                <button type="button" onClick={() => setCurrDisplayedComp(<PostsList/>)}
+                <button type="button" onClick={() => {props.onClosePostForm ? props.onClosePostForm() : navigate('..')}}
                         className="btn btn-outline-danger">Cancel
                 </button>
             </div>
