@@ -26,13 +26,13 @@ interface PostListProps {
 }
 
 function PostsList(props: PostListProps) {
-    const [posts, setPosts] = useRecoilState(fullPostsState);
-    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
+    const [posts, setPosts] = useRecoilState<PostItemData[]>(fullPostsState);
 
     const [showPostItemDialog, setShowPostItemDialog] = useState(false);
     const [showAddReviewDialog, setShowAddReviewDialog] = useState(false);
     const [showPostFormForEdit, setShowPostFormForEdit] = useState(false);
     const [postForDisplay, setPostForDisplay] = useState<PostItemData>()
+    const [postList, setPostList] = useState(posts);
 
     const onClickPostItem = (post: PostItemData) => {
         setShowAddReviewDialog(false);
@@ -66,13 +66,19 @@ function PostsList(props: PostListProps) {
     }
 
     const filteredPostList = () => {
-        const postList = props.filterByUserId ? posts.filter(value => value.user._id === props.filterByUserId) : posts;
         return postList.map((post) => (
             <Col key={post._id}>
                 <PostItem key={post._id} post={post} onClickPostItem={onClickPostItem}/>
             </Col>
         ))
     }
+
+    useEffect(() => {
+        console.log("setPostList")
+        console.log("posts from recoil:", posts)
+          setPostList(props.filterByUserId ? posts.filter(value => value.user._id === props.filterByUserId) : posts);
+        postForDisplay && setPostForDisplay(posts.find(value => value._id === postForDisplay?._id))
+    }, [posts]);
 
 
     useEffect(() => {
@@ -89,40 +95,6 @@ function PostsList(props: PostListProps) {
         }
     }, [])
 
-    //const [token, setToken] = useState<string | null>(getRefreshTokenFromLocalStorage);
-    //const [refreshPromise, setRefreshPromise] = useState<Promise<Tokens> | null>(null);
-    // useEffect(() => {
-    //     const interceptResponse = apiClient.interceptors.response.use(
-    //         response => response,
-    //         async (error: AxiosError) => {
-    //             if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-    //                 // If there's an ongoing refresh promise, return it
-    //                 if (refreshPromise) {
-    //                     return refreshPromise.then(() => apiClient.request(error.config));
-    //                 }
-    //                 // Otherwise, start a new refresh operation
-    //                 const newRefreshPromise = refreshToken().then(newToken => {
-    //                     //setToken(newToken.refreshToken);
-    //                     setRefreshPromise(null); // Clear the refresh promise once refresh is done
-    //                     return newToken;
-    //                 }).catch(refreshError => {
-    //                     setRefreshPromise(null); // Clear the refresh promise on refresh error
-    //                     throw refreshError;
-    //                 });
-    //                 setRefreshPromise(newRefreshPromise);
-    //                 return newRefreshPromise.then(() => axios.request(error.config));
-    //             }
-    //             return Promise.reject(error);
-    //         }
-    //     );
-    //
-    //     return () => {
-    //         // Clean up interceptor on component unmount
-    //         axios.interceptors.response.eject(interceptResponse);
-    //     };
-    // }, [token, refreshPromise]);
-    const [refreshingToken, setRefreshingToken] = useState(false);
-    const [failedRequests, setFailedRequests] = useState<any[]>([]);
 
 
     return (

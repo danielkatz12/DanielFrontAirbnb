@@ -37,7 +37,7 @@ export interface PostProps {
 function PostForm(props: PostProps) {
     console.log("In Post Form...")
     const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
-    const [allFullPosts, setAllFullPosts] = useRecoilState(fullPostsState);
+    const [allFullPosts,  setAllFullPosts] = useRecoilState(fullPostsState);
 
     const navigate = useNavigate();
 
@@ -104,9 +104,11 @@ function PostForm(props: PostProps) {
             postToAddOrUpdate = {...postToAddOrUpdate, _id: props.postToEdit._id} as PostDto;
             updatePost(postToAddOrUpdate)
                 .then(value => {
-                    const myPostItem = {...allFullPosts[myPostItemIndex], ...value} as PostItemData;
-                    const tempAllFullPosts = {...allFullPosts};
+                    const myPostItem = {...allFullPosts[myPostItemIndex], ...value, user: allFullPosts[myPostItemIndex].user} as PostItemData;
+                    const tempAllFullPosts = [...allFullPosts];
                     tempAllFullPosts[myPostItemIndex] = {...myPostItem};
+                    // console.log("about to update postList: ", tempAllFullPosts)
+                    // console.log("about to update postList->> updated value: ", myPostItem)
                     setAllFullPosts(tempAllFullPosts);
                     props.onClosePostForm && props.onClosePostForm();
                     setCurrDisplayedComp(<PostDisplay post={myPostItem}/>);//todo:to delete???????? how i navigate to my dialog??

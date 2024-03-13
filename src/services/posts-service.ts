@@ -29,7 +29,7 @@ export function updatePost(postDto: PostDto): Promise<PostDto> {
         console.log("Updating post: ", postDto);
         apiClient.put(`/post/${postDto._id}`, postDto).then((response) => {
             console.log("Post saved successfully: ", response)
-            resolve(response.data);
+            resolve(response.data.student);//TODO: CHANGE STUDENT TO OBJECT OR SEND WITHOUT SPECIFIC NAME
         }).catch((error) => {
             console.log("failed to update Post: ", error)
             reject(error)
