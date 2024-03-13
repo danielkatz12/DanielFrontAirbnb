@@ -5,6 +5,7 @@ import avatar from "../assets/avatar.jpeg";
 import {useRecoilState} from "recoil";
 import UserProfileDetailsForm from "./UserProfileDetailsForm.tsx";
 import PostsList from "./PostsList.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface MyProfileProps {
     userProfileDetails: UserDetailsData
@@ -12,6 +13,8 @@ interface MyProfileProps {
 
 function MyProfile({userProfileDetails}: MyProfileProps) {
     const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
+
+    const navigate = useNavigate();
 
     console.log("My Profile: ", userProfileDetails)
     return (
@@ -28,8 +31,10 @@ function MyProfile({userProfileDetails}: MyProfileProps) {
                         <br/>
                         <strong>Age:</strong> {userProfileDetails.age}
                     </Card.Text>
-                    <Button variant="primary" onClick={() => {setCurrDisplayedComp(<UserProfileDetailsForm isInRegistrationMode={false}/>)}}>Edit My Profile</Button>{' '}
-                    <Button variant="danger" onClick={() => {setCurrDisplayedComp(<PostsList/>)}}>Close</Button>
+                    <Button variant="primary" onClick={() => {navigate("/user-details")}}>Edit My Profile</Button>{' '}
+                    <Button variant="danger" onClick={() => {navigate("/")}}>Close</Button>
+                    {/*<Button variant="primary" onClick={() => {setCurrDisplayedComp(<UserProfileDetailsForm isInRegistrationMode={false}/>)}}>Edit My Profile</Button>{' '}*/}
+                    {/*<Button variant="danger" onClick={() => {setCurrDisplayedComp(<PostsList/>)}}>Close</Button>*/}
                 </Card.Body>
             </Card>
         </Container>
