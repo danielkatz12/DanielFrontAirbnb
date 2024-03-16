@@ -76,7 +76,7 @@ function PostsList(props: PostListProps) {
         console.log("posts from recoil:", posts)
           setPostList(props.filterByUserId ? posts.filter(value => value.user._id === props.filterByUserId) : posts);
         postForDisplay && setPostForDisplay(posts.find(value => value._id === postForDisplay?._id))
-        // setLoading(false)
+        setLoading(false)
     }, [posts]);
 
 
