@@ -4,7 +4,7 @@ import {Button, Card} from 'react-bootstrap';
 import {PostItemData} from "./PostItem.tsx";
 import {getUserIDFromLocalStorage} from "../services/token-service.ts";
 import {useRecoilState} from "recoil";
-import {allPostsReviews} from "../stateManagement/RecoilState.ts";
+import {allPostsReviews, fullPostsState} from "../stateManagement/RecoilState.ts";
 import {getReviewsByPostId, UserReview} from "../services/reviews-service.ts";
 import {deletePostById} from "../services/posts-service.ts";
 import {useNavigate} from "react-router-dom";
@@ -18,6 +18,7 @@ interface PostDialogProps {
 
 function PostDisplayDialog(props: PostDialogProps) {
     const [allPostReviewsState, setAllPostReviewsState] = useRecoilState<UserReview[]>(allPostsReviews);
+    const [allPostsState, setAllPostsState] = useRecoilState(fullPostsState);
 
     const navigate = useNavigate();
 
@@ -30,6 +31,7 @@ function PostDisplayDialog(props: PostDialogProps) {
         try {
             console.log("post Id For Delete: ", props.post._id)
             await deletePostById(props.post._id);
+            setAllPostsState(allPostsState.filter(value => value._id !== props.post._id));
             navigate("/");
             props.onClosePostDialog();
         } catch (error) {
@@ -47,7 +49,7 @@ function PostDisplayDialog(props: PostDialogProps) {
             <div className="modal-dialog modal-fullscreen  modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h1 className="modal-title fs-5">Modal 1</h1>
+                        <h1 className="modal-title fs-5">Airbnb-Post</h1>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
                                 onClick={props.onClosePostDialog}></button>
                     </div>

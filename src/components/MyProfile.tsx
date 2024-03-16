@@ -12,14 +12,13 @@ interface MyProfileProps {
 }
 
 function MyProfile({userProfileDetails}: MyProfileProps) {
-    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
 
     const navigate = useNavigate();
 
     console.log("My Profile: ", userProfileDetails)
     return (
-        <Container className="vh-100 d-flex justify-content-center align-items-center">
-            <Card style={{width: '35rem'}}>
+        <Container className="vh-80 d-flex justify-content-center align-items-center">
+            <Card style={{width: '25rem', marginTop:'2rem'}}>
                 <Card.Img variant="top"
                           src={userProfileDetails.profileImage ? userProfileDetails.profileImage : avatar}/>
                 <Card.Body>

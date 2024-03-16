@@ -1,18 +1,13 @@
 import {useEffect, useState} from "react"
 import PostItem, {PostItemData} from "./PostItem.tsx"
 import {useRecoilState} from "recoil";
-import {currentDisplayedComponentState, fullPostsState} from "../stateManagement/RecoilState.ts";
+import {fullPostsState} from "../stateManagement/RecoilState.ts";
 import {getAllFullPosts} from "../services/posts-service.ts";
-import {Button, Col, Container, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import '../css/PostsList.css';
 import PostDisplayDialog from "./PostDisplayDialog.tsx";
 import AddReviewDialog from "./AddReviewDialog.tsx";
 import PostForm from "./PostForm.tsx";
-import {PostDto} from "../dtos/post-dto.ts";
-import axios, {AxiosError} from "axios";
-import {useRefreshToken, Tokens} from "../services/user-service.ts";
-import {getRefreshTokenFromLocalStorage} from "../services/token-service.ts";
-import apiClient from "../services/api-client.ts";
 
 
 interface PostData {
@@ -33,6 +28,8 @@ function PostsList(props: PostListProps) {
     const [showPostFormForEdit, setShowPostFormForEdit] = useState(false);
     const [postForDisplay, setPostForDisplay] = useState<PostItemData>()
     const [postList, setPostList] = useState(posts);
+    const [loading, setLoading] = useState<boolean>(false);
+
 
     const onClickPostItem = (post: PostItemData) => {
         setShowAddReviewDialog(false);
@@ -74,10 +71,12 @@ function PostsList(props: PostListProps) {
     }
 
     useEffect(() => {
+        setLoading(true);
         console.log("setPostList")
         console.log("posts from recoil:", posts)
           setPostList(props.filterByUserId ? posts.filter(value => value.user._id === props.filterByUserId) : posts);
         postForDisplay && setPostForDisplay(posts.find(value => value._id === postForDisplay?._id))
+        // setLoading(false)
     }, [posts]);
 
 
@@ -99,9 +98,19 @@ function PostsList(props: PostListProps) {
 
     return (
         <div>
+            <div style={{position:"fixed", zIndex:"1", top: "50%", left: "50%", transform: 'translate(-50%, -50%)'}}>
+                {loading && (
+                    <div className="spinner-border" role="status">
+                        <span className="sr-only"></span>
+                    </div>
+                )}
+                {/*<Button onClick={fetchData} disabled={loading}>*/}
+                {/*    {loading ? 'Loading...' : 'Fetch Data'}*/}
+                {/*</Button>*/}
+            </div>
             {/*<NavBar/>*/}
-            {!showPostFormForEdit && <div className="background overflow-y-scroll">
-                <Container>
+            {!showPostFormForEdit && <div className="background overflow-y-auto" style={{height: "84vh"}}>
+                <Container style={{marginBottom:"4rem"}}>
                     <Row xs={1} md={2} lg={3} xl={4} className="g-4">
                         {filteredPostList()}
                     </Row>

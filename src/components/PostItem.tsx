@@ -26,13 +26,9 @@ interface PostProps {
 }
 
 function PostItem({post, onClickPostItem}: PostProps) {
-    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
-    const navigate = useNavigate();
 
     return (
-        //<Card onClick={() => navigate('/display-post', )}
         <Card onClick={() => onClickPostItem(post)}
-            //        <Card onClick={() => setCurrDisplayedComp(<PostDisplay key={post._id} post={post}/>)}
               className={"post-item"} style={{width: '250px'}}>
             <Card.Img variant="top" src={post.imageUrl} alt={avatar}
                       className={"post-item-image"} style={{height: '150px', objectFit: 'cover'}}/>

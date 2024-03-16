@@ -2,7 +2,7 @@ import {zodResolver} from "@hookform/resolvers/zod"
 import {FieldValues, useForm} from "react-hook-form"
 import z from "zod"
 import {ChangeEvent, useEffect, useRef, useState} from "react";
-import avatar from "../assets/avatar.jpeg";
+import appartment from "../assets/appartment.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faImage} from "@fortawesome/free-solid-svg-icons";
 import {updatePhoto, uploadPhoto} from "../services/file-service.ts";
@@ -139,12 +139,13 @@ function PostForm(props: PostProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="vstack gap-3 col-md-7 mx-auto">
-            <h1>My Profile</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="vstack gap-3 col-md-7 mx-auto"
+              style={{overflowY:"auto", marginTop:"2rem", height:"84vh", backgroundColor:"seashell"}}>
+                <h1>New Post</h1>
             <div className="d-flex justify-content-center position-relative">
                 <img
-                    src={imgSrc ? URL.createObjectURL(imgSrc) : (props.postToEdit && props.postToEdit.imageUrl ? props.postToEdit.imageUrl : avatar)}
-                    alt={avatar}
+                    src={imgSrc ? URL.createObjectURL(imgSrc) : (props.postToEdit && props.postToEdit.imageUrl ? props.postToEdit.imageUrl : appartment)}
+                    alt={appartment}
                     style={{height: "230px", width: "230px"}}
                     className="img-fluid"/>
                 <button type="button" className="btn position-absolute bottom-0 end-0" onClick={selectImg}>
@@ -153,6 +154,7 @@ function PostForm(props: PostProps) {
             </div>
             <input style={{display: "none"}} ref={fileInputRef} type="file" onChange={imgSelected}></input>
             <div className="mb-3 mt-3">
+                <label htmlFor="city">City</label>
                 <AutocompleteInput suggestions={allCities} onChooseSuggestion={getAutoValue}/>
                 {errors.city && <p className="text-danger">{errors.city.message}</p>}
                 <input style={{display: "none"}} {...register("city")} type="text" id="city" className="form-control" value={city}/>

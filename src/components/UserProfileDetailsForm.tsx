@@ -112,7 +112,8 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="vstack gap-3 col-md-7 mx-auto">
+        <form onSubmit={handleSubmit(onSubmit)} className="vstack gap-3 col-md-7 mx-auto"
+              style={{overflowY:"auto", marginTop:"2rem", height:"84vh", backgroundColor:"seashell"}}>
             <h1>My Profile</h1>
             <div className="d-flex justify-content-center position-relative">
                 <img
@@ -156,7 +157,7 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
                        id="age" className="form-control"/>
                 {errors.age && <p className="text-danger">{errors.age.message}</p>}
             </div>
-            <button type="submit" className="btn btn-primary">Submit</button>
+            <button type="submit" className="btn btn-primary mb-2">Submit</button>
         </form>
     )
 }

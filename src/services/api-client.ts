@@ -50,7 +50,7 @@ apiClient.interceptors.response.use(
     async (error: AxiosError) => {
         const originalRequest = error.config;
         if (error.response?.status === 401 || error.response?.status === 403) {
-            console.log("got authorization error ->> need to refersh token");
+            console.log("got authorization error ->> need to refresh token");
             if (!isRefreshing) {
                 isRefreshing = true;
                 //const refreshToken = getRefreshTokenFromLocalStorage();
