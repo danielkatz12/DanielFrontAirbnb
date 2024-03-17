@@ -11,7 +11,7 @@ const headers = {
 };
 
 const apiClient = axios.create({
-    baseURL: 'https://193.106.55.228',
+    baseURL: 'https://10.10.248.228',
     headers: {...headers}
 });
 // // Add a request interceptor to attach access token to requests
