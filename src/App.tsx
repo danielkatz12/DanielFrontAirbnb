@@ -73,7 +73,8 @@ function App() {
     return (
         <div>
             <NavBar/>
-            {/*{currDisplayedComp}*/}
+            {/*{currDi
+            splayedComp}*/}
             <Routes>
                 <Route path={"/"} element={<PostsList/>}/>
                 <Route path={"/register"} element={<Registration/>}/>
