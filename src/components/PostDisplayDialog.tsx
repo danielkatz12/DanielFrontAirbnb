@@ -4,10 +4,12 @@ import {Button, Card} from 'react-bootstrap';
 import {PostItemData} from "./PostItem.tsx";
 import {getUserIDFromLocalStorage} from "../services/token-service.ts";
 import {useRecoilState} from "recoil";
-import {allPostsReviews, fullPostsState} from "../stateManagement/RecoilState.ts";
+import {alertState, allPostsReviews, fullPostsState} from "../stateManagement/RecoilState.ts";
 import {getReviewsByPostId, UserReview} from "../services/reviews-service.ts";
 import {deletePostById} from "../services/posts-service.ts";
 import {useNavigate} from "react-router-dom";
+import AlertMessage from "./AlertMessage.tsx";
+import '../css/PostDisplay.css';
 
 interface PostDialogProps {
     onAddReview: () => void,
@@ -19,11 +21,17 @@ interface PostDialogProps {
 function PostDisplayDialog(props: PostDialogProps) {
     const [allPostReviewsState, setAllPostReviewsState] = useRecoilState<UserReview[]>(allPostsReviews);
     const [allPostsState, setAllPostsState] = useRecoilState(fullPostsState);
+    const [alertPopup, setAlertPopup] = useRecoilState(alertState);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        getReviewsByPostId(props.post._id).then(value => setAllPostReviewsState(value)).catch((error) => console.log("failed to load post's reviews from server")//todo:alart
+        getReviewsByPostId(props.post._id)
+            .then(value => setAllPostReviewsState(value))
+            .catch((error) => {
+                console.log("failed to load post's reviews from server");
+                setAlertPopup({message: "Failed to load post's reviews from server!", variant:"danger"});
+            }
         );
     }, []);
 
@@ -31,11 +39,13 @@ function PostDisplayDialog(props: PostDialogProps) {
         try {
             console.log("post Id For Delete: ", props.post._id)
             await deletePostById(props.post._id);
+            setAlertPopup({message: "The Post was deleted successfully", variant:"success"})
             setAllPostsState(allPostsState.filter(value => value._id !== props.post._id));
             navigate("/");
             props.onClosePostDialog();
         } catch (error) {
-            console.log("failed to delete the post....")//todo:alart
+            console.log("failed to delete the post....");
+            setAlertPopup({message: "Failed to delete the post!", variant:"danger"});
         }
     }
 
@@ -47,7 +57,7 @@ function PostDisplayDialog(props: PostDialogProps) {
         <div className="modal fade show" id="exampleModalToggle" aria-labelledby="exampleModalToggleLabel" tabIndex={-1}
              style={{display: "block"}} aria-modal={true} role={"dialog"}>
             <div className="modal-dialog modal-fullscreen  modal-dialog-centered">
-                <div className="modal-content">
+                <div className="modal-content" style={{height: '100%'}}>
                     <div className="modal-header">
                         <h1 className="modal-title fs-5">Airbnb-Post</h1>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
@@ -55,7 +65,7 @@ function PostDisplayDialog(props: PostDialogProps) {
                     </div>
 
 
-                    <div className="modal-body" style={{height: '150%'}}>
+                    <div className="modal-body" style={{height: '80rem'}}>
                         <div>
                             <div className="full-post-details-container">
                                 <img className="profile-image" src={props.post.user.userProfileDetails.profileImage}
@@ -93,31 +103,11 @@ function PostDisplayDialog(props: PostDialogProps) {
                                     </Card>
                                 </div>
                             </div>
-                            {/*<div>*/}
-                            {/*    {allPostReviewsState.map(review =>*/}
-                            {/*        <div className="full-post-details-container">*/}
-                            {/*            <img className="profile-image"*/}
-                            {/*                 src={review.userProfileDetails.profileImage}*/}
-                            {/*                 alt="Seller Profile"/>*/}
-                            {/*            <div className="post-details">*/}
-                            {/*                <Card className="post-card">*/}
-                            {/*                    <Card.Body>*/}
-                            {/*                        <Card.Title>Reviewer: {review.userProfileDetails.name}</Card.Title>*/}
-                            {/*                        <Card.Text>*/}
-                            {/*                            <strong>comment:</strong> {review.comment}*/}
-                            {/*                            <br/>*/}
-                            {/*                        </Card.Text>*/}
-                            {/*                    </Card.Body>*/}
-                            {/*                </Card>*/}
-                            {/*            </div>*/}
-                            {/*        </div>*/}
-                            {/*    )}*/}
-                            {/*</div>*/}
                         </div>
                     </div>
 
                     <div className="modal-header mb-2"><h5 className="modal-title fs-6">All Post Reviews</h5></div>
-                    <div className="modal-body">
+                    <div className="modal-body" style={{height: '-webkit-fill-available'}}>
                         <div>
                             {allPostReviewsState.map(review =>
                                 <div className="full-post-details-container">
@@ -146,6 +136,7 @@ function PostDisplayDialog(props: PostDialogProps) {
                     </div>}
                 </div>
             </div>
+            <AlertMessage/>
         </div>
 
     );

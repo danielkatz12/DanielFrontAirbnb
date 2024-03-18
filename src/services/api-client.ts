@@ -49,7 +49,7 @@ apiClient.interceptors.response.use(
     },
     async (error: AxiosError) => {
         const originalRequest = error.config;
-        if (error.response?.status === 401 || error.response?.status === 403) {
+        if ((error.response?.status === 401 || error.response?.status === 403) && (originalRequest ? (originalRequest.url ? originalRequest.url !== "/auth/login" : true ): true)) {
             console.log("got authorization error ->> need to refresh token");
             if (!isRefreshing) {
                 isRefreshing = true;
@@ -58,11 +58,6 @@ apiClient.interceptors.response.use(
                     // Call your server's refresh token endpoint
                     await useRefreshToken();
                     const newAccessToken = getAccessTokenFromLocalStorage();
-
-                    // Store the new access and refresh tokens
-                    // saveRefreshTokenInLocalStorage(response.data.refreshToken);
-                    // saveAccessTokenInLocalStorage(newAccessToken);
-
                     //console.log("Finish to refresh the tokens and saved on local storage successfully.")
 
                     // Retry all queued requests with the new access token

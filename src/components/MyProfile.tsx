@@ -1,10 +1,7 @@
 import React from 'react';
-import {Card, Container, Button} from 'react-bootstrap';
-import {currentDisplayedComponentState, UserDetailsData} from "../stateManagement/RecoilState.ts";
+import {Button, Card, Container} from 'react-bootstrap';
+import {UserDetailsData} from "../stateManagement/RecoilState.ts";
 import avatar from "../assets/avatar.jpeg";
-import {useRecoilState} from "recoil";
-import UserProfileDetailsForm from "./UserProfileDetailsForm.tsx";
-import PostsList from "./PostsList.tsx";
 import {useNavigate} from "react-router-dom";
 
 interface MyProfileProps {
@@ -32,8 +29,6 @@ function MyProfile({userProfileDetails}: MyProfileProps) {
                     </Card.Text>
                     <Button variant="primary" onClick={() => {navigate("/user-details")}}>Edit My Profile</Button>{' '}
                     <Button variant="danger" onClick={() => {navigate("/")}}>Close</Button>
-                    {/*<Button variant="primary" onClick={() => {setCurrDisplayedComp(<UserProfileDetailsForm isInRegistrationMode={false}/>)}}>Edit My Profile</Button>{' '}*/}
-                    {/*<Button variant="danger" onClick={() => {setCurrDisplayedComp(<PostsList/>)}}>Close</Button>*/}
                 </Card.Body>
             </Card>
         </Container>

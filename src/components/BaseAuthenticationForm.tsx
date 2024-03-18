@@ -6,13 +6,13 @@ import {googleSignin} from "../services/user-service.ts";
 import {getUserIDFromLocalStorage, saveUserIDInLocalStorage} from "../services/token-service.ts";
 import {getAllUserProfileDetails, getMyUserProfileDetails} from "../services/user-profile-details-service.ts";
 import {
-    accessTokenState, currentDisplayedComponentState, idTokenState,
+    accessTokenState,
+    alertState,
+    idTokenState,
     refreshTokenState,
     UserDetailsData,
     userDetailsState
 } from "../stateManagement/RecoilState.ts";
-import PostsList from "./PostsList.tsx";
-import UserProfileDetailsForm from "./UserProfileDetailsForm.tsx";
 import {useRef} from "react";
 import {useRecoilState} from "recoil";
 import {useNavigate} from "react-router-dom";
@@ -35,7 +35,7 @@ function BaseAuthenticationForm(props: BaseAuthProps) {
     const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
     const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenState);
     const [idToken, setIdToken] = useRecoilState(idTokenState);
-    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
+    const [alertPopup, setAlertPopup] = useRecoilState(alertState);
 
     const navigate = useNavigate();
 
@@ -50,9 +50,9 @@ function BaseAuthenticationForm(props: BaseAuthProps) {
         console.log(credentialResponse);
         try {
             const res = await googleSignin(credentialResponse)
-            console.log("access token: ", accessToken);//TODO: to-delete
-            console.log("refresh token: ", refreshToken);//TODO: to-delete
-            console.log("id token: ", idToken);//TODO: to-delete
+            console.log("access token: ", accessToken);
+            console.log("refresh token: ", refreshToken);
+            console.log("id token: ", idToken);
             setAccessToken(res.accessToken);
             setRefreshToken(res.refreshToken);
             setIdToken(credentialResponse.credential);
@@ -64,14 +64,15 @@ function BaseAuthenticationForm(props: BaseAuthProps) {
             try {
                 const userDetails: UserDetailsData = await getMyUserProfileDetails(getUserIDFromLocalStorage()!)
                 setUserProfileDetails(userDetails)
+                setAlertPopup({message: "Sign-in with google account successfully", variant:"success"})
             } catch (error) {
-                console.log("failed to gey the uder details from server")
+                console.log("failed to get the user details from server")
+                setAlertPopup({message: "Failed to fetch the user from server after login with google", variant:"danger"});
             }
             isUserAlreadyExists ? navigate("..") : navigate("/register/user-details")
-            setCurrDisplayedComp(isUserAlreadyExists ? <PostsList/> :
-                <UserProfileDetailsForm isInRegistrationMode={true}/>)//todo: to delete
         } catch (e) {
             console.log(e)
+            setAlertPopup({message: "Failed to sign-in with google account...", variant:"danger"});
         }
     }
 

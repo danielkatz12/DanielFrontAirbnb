@@ -1,11 +1,7 @@
 import {IUser} from "../services/user-service.ts";
-import {currentDisplayedComponentState, UserDetailsData} from "../stateManagement/RecoilState.ts";
+import {UserDetailsData} from "../stateManagement/RecoilState.ts";
 import avatar from "../assets/avatar.jpeg";
-import {useRecoilState} from "recoil";
-import PostDisplay from "./PostDisplay.tsx";
 import {Card} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
-import PostDisplayDialog from "./PostDisplayDialog.tsx";
 
 
 export interface PostItemData {
