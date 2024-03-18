@@ -25,28 +25,12 @@ function NavBar() {
             console.log("user is now Logout");
             alert("user is now Logout");
         } catch (error) {
-            console.log("Failed in logout");//todo: i think is deleted the refresh token??...
+            console.log("Failed in logout");
             alert("Failed in logout");
         }
     }
 
     return (
-        // <Navbar bg="light" expand="lg">
-        //     <Navbar.Brand href="#home">Your Welcome To Airbnb Website</Navbar.Brand>
-        //     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        //     <Navbar.Collapse id="basic-navbar-nav">
-        //         <Nav className="mr-auto">
-        //             <Nav.Link href="/">All Posts</Nav.Link>
-        //             <Nav.Link href="/my-profile">My Profile</Nav.Link>
-        //             <Nav.Link href="/redgister">Registration</Nav.Link>
-        //             <Nav.Link href="/add-post">Add Post</Nav.Link>
-        //             <NavDropdown title="Special" id="basic-nav-dropdown">
-        //                 <NavDropdown.Item href="/login">Login</NavDropdown.Item>
-        //                 {/*<NavDropdown.Item href="#logout">Logout</NavDropdown.Item>*/}
-        //             </NavDropdown>
-        //         </Nav>
-        //     </Navbar.Collapse>
-        // </Navbar>
         <div className="App">
             <Navbar bg="light" expand="lg" className="custom-navbar">
                 <Navbar.Brand href="#home">Welcome To Airbnb Website</Navbar.Brand>
@@ -56,7 +40,7 @@ function NavBar() {
                         <Nav.Link href="/">All Posts</Nav.Link>
                         {getAccessTokenFromLocalStorage() && <Nav.Link href="/my-profile">My Profile</Nav.Link>}
                         {getAccessTokenFromLocalStorage() && <Nav.Link href="/my-posts">All My Posts</Nav.Link>}
-                        <Nav.Link href="/add-post">Add Post</Nav.Link>
+                        {getAccessTokenFromLocalStorage() &&<Nav.Link href="/add-post">Add Post</Nav.Link>}
                         <NavDropdown title="Account" id="basic-nav-dropdown">
                             {!getAccessTokenFromLocalStorage() &&
                                 <NavDropdown.Item href="/login">Login</NavDropdown.Item> }

@@ -3,21 +3,25 @@ import BaseAuthenticationForm from "./BaseAuthenticationForm.tsx";
 import {useRecoilState} from "recoil";
 import {
     accessTokenState,
-    currentDisplayedComponentState,
+    alertState,
     refreshTokenState,
-    UserDetailsData, userDetailsState
+    UserDetailsData,
+    userDetailsState
 } from "../stateManagement/RecoilState.ts";
 import {IUser, loginUser} from "../services/user-service.ts";
-import PostsList from "./PostsList.tsx";
-import {getUserIDFromLocalStorage, saveUserIDInLocalStorage} from "../services/token-service.ts";
-import {getAllUserProfileDetails, getMyUserProfileDetails} from "../services/user-profile-details-service.ts";
-import {redirect, useNavigate} from "react-router-dom";
+import {
+    clearAllFromLocalStorage,
+    getUserIDFromLocalStorage,
+    saveUserIDInLocalStorage
+} from "../services/token-service.ts";
+import {getMyUserProfileDetails} from "../services/user-profile-details-service.ts";
+import {useNavigate} from "react-router-dom";
 
 function UserLogin() {
     const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
     const [refreshToken, setRefreshToken] = useRecoilState(refreshTokenState);
-    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
     const [userProfileDetails, setUserProfileDetails] = useRecoilState(userDetailsState);
+    const [alertPopup, setAlertPopup] = useRecoilState(alertState);
 
     const navigate = useNavigate();
 
@@ -31,22 +35,29 @@ function UserLogin() {
                 const res = await loginUser(user)
                 setAccessToken(res.accessToken);
                 setRefreshToken(res.refreshToken);
+
                 console.log(res)
-                res._id! && saveUserIDInLocalStorage(res._id);
+                res._id && saveUserIDInLocalStorage(res._id);
                 console.log("response:", res);
 
                 try {
                     const userDetails: UserDetailsData = await getMyUserProfileDetails(getUserIDFromLocalStorage()!)
                     setUserProfileDetails(userDetails)
+                    setAlertPopup({message: "Login successfully :)" , variant:"success"});
+                    navigate("/")
                 } catch (error) {
-                    console.log("failed to gey the uder details from server")
+                    console.log("failed to get the user details from server")
+                    setAlertPopup({message: "Error in login process..." , variant:"danger"});
+                    clearAllFromLocalStorage();
+                    navigate("/")
                 }
-                //TODO: maybe alert the success?
 
-                setCurrDisplayedComp(<PostsList/>)
-                navigate("/")
             } catch (error) {
-                //TODO: maybe alert the error?
+                if (error instanceof Error && error.message === "401") {
+                    setAlertPopup({message: "Incorrect Email or Password..." , variant:"danger"});
+                } else {
+                    setAlertPopup({message: "Error in login process..." , variant:"danger"});
+                }
             }
         }
     }

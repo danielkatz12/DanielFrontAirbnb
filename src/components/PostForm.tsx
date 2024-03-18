@@ -6,13 +6,11 @@ import appartment from "../assets/appartment.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faImage} from "@fortawesome/free-solid-svg-icons";
 import {updatePhoto, uploadPhoto} from "../services/file-service.ts";
-import {currentDisplayedComponentState, fullPostsState, UserDetailsData} from "../stateManagement/RecoilState.ts";
+import {alertState, fullPostsState} from "../stateManagement/RecoilState.ts";
 import {useRecoilState} from "recoil";
 import {PostDto} from "../dtos/post-dto.ts";
 import {insertPost, updatePost} from "../services/posts-service.ts";
-import PostsList from "./PostsList.tsx";
-import PostItem, {PostItemData} from "./PostItem.tsx";
-import PostDisplay from "./PostDisplay.tsx";
+import {PostItemData} from "./PostItem.tsx";
 import AutocompleteInput from "./auto-complete-input.tsx";
 import {getAllCities} from "../services/gov-service.ts";
 import {useNavigate} from "react-router-dom";
@@ -36,8 +34,8 @@ export interface PostProps {
 
 function PostForm(props: PostProps) {
     console.log("In Post Form...")
-    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
-    const [allFullPosts,  setAllFullPosts] = useRecoilState(fullPostsState);
+    const [allFullPosts, setAllFullPosts] = useRecoilState(fullPostsState);
+    const [alertPopup, setAlertPopup] = useRecoilState(alertState);
 
     const navigate = useNavigate();
 
@@ -48,14 +46,18 @@ function PostForm(props: PostProps) {
     const [description, setDescription] = useState<string | undefined>(props.postToEdit ? props.postToEdit.description : undefined);
     const [postImgUrl, setPostImgUrl] = useState<string | undefined>(props.postToEdit?.imageUrl);
     const [imgSrc, setImgSrc] = useState<File>();
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [allCities, setAllCities] = useState<string[]>(["תל אביב", "חיפה"]);
 
-    const [allCities, setAllCities] = useState<string[]>(["תל אביב","חיפה"]);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         getAllCities()
             .then(value => setAllCities(value))
-            .catch((error) => console.log("There is a problem to get all Cities list from server... ", error));
+            .catch((error) => {
+                console.log("There was a problem to get all Cities list from server... ", error);
+                setAlertPopup({message: "There was a problem to get all Cities list from server...", variant:"danger"})
+            });
     }, []);
 
     const imgSelected = (e: ChangeEvent<HTMLInputElement>) => {
@@ -84,10 +86,10 @@ function PostForm(props: PostProps) {
             if (imgSrc && allFullPosts[myPostItemIndex].imageUrl) {
                 try {
                     url = await updatePhoto(allFullPosts[myPostItemIndex].imageUrl, imgSrc);
-                    //postToAddOrUpdate = {...postToAddOrUpdate, imageUrl: url} as PostItemData;
                     console.log("Image updated successfully. New URL:", url);
                 } catch (error) {
-                    console.error("Error updating the image:", error);//todo: alert??
+                    console.error("Error updating the image:", error);
+                    setAlertPopup({message: "Error updating the image", variant:"danger"})
                     url = allFullPosts[myPostItemIndex].imageUrl;
                 }
             }
@@ -104,37 +106,48 @@ function PostForm(props: PostProps) {
             postToAddOrUpdate = {...postToAddOrUpdate, _id: props.postToEdit._id} as PostDto;
             updatePost(postToAddOrUpdate)
                 .then(value => {
-                    const myPostItem = {...allFullPosts[myPostItemIndex], ...value, user: allFullPosts[myPostItemIndex].user} as PostItemData;
+                    const myPostItem = {
+                        ...allFullPosts[myPostItemIndex], ...value,
+                        user: allFullPosts[myPostItemIndex].user
+                    } as PostItemData;
                     const tempAllFullPosts = [...allFullPosts];
                     tempAllFullPosts[myPostItemIndex] = {...myPostItem};
                     // console.log("about to update postList: ", tempAllFullPosts)
                     // console.log("about to update postList->> updated value: ", myPostItem)
                     setAllFullPosts(tempAllFullPosts);
+                    setAlertPopup({message: "Updated pos successfully", variant:"success"})
                     props.onClosePostForm && props.onClosePostForm();
-                    setCurrDisplayedComp(<PostDisplay post={myPostItem}/>);//todo:to delete???????? how i navigate to my dialog??
+                    navigate("..");
                 }).catch(reason => {
-                console.log("Failed to update post: ", reason);//todo:1- alert
+                console.log("Failed to update post: ", reason);
+                setAlertPopup({message: "Failed to update post", variant:"danger"})
             })
         } else {
-            const url = imgSrc ? await uploadPhoto(imgSrc!) : undefined;
-            const postToAddOrUpdate: PostDto = {
-                city: city!,
-                street: street!,
-                streetNumber: streetNumber!,
-                description: description!,
-                imageUrl: url,
-                pricePerDay: pricePerDay!
-            } as PostDto
+            try {
+                const url = imgSrc ? await uploadPhoto(imgSrc!) : undefined;
+                const postToAddOrUpdate: PostDto = {
+                    city: city!,
+                    street: street!,
+                    streetNumber: streetNumber!,
+                    description: description!,
+                    imageUrl: url,
+                    pricePerDay: pricePerDay!
+                } as PostDto
 
-            console.log("uploaded image url:" + url);
-            insertPost(postToAddOrUpdate)
-                .then(value => {
-                    console.log("on then: ", value);
-                    navigate('/');
-                    setCurrDisplayedComp(<PostsList/>);//todo:to delete
-                }).catch(reason => {
-                console.log("on error: ", reason);//todo:1- alert
-            })
+                console.log("uploaded image url:" + url);
+
+                insertPost(postToAddOrUpdate)
+                    .then(value => {
+                        console.log("on then: ", value);
+                        setAlertPopup({message: "Post saved successfully in server", variant:"success"})
+                        navigate('/');
+                    }).catch(reason => {
+                    console.log("on error: ", reason);
+                    setAlertPopup({message: "Error in saving post in server...", variant:"danger"})
+                })
+            } catch (err) {
+                console.log()
+            }
         }
     }
 

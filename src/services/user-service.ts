@@ -5,6 +5,7 @@ import {
     saveAccessTokenInLocalStorage,
     saveRefreshTokenInLocalStorage
 } from "./token-service.ts";
+import {AxiosError} from "axios";
 
 export interface IUser {
     email: string,
@@ -39,6 +40,11 @@ export const loginUser = (user: IUser) => {
             console.log("User is login successfully")
             resolve(response.data);
         }).catch((error) => {
+            if (error instanceof AxiosError  && error.response && error.response.status === 401)
+            {
+                console.error("email or password incorrect", error);
+                reject(new Error("401"));
+            }
             console.log("Failed to login the user");
             reject(error);
         })

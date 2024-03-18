@@ -1,13 +1,14 @@
 import {useEffect, useState} from "react"
 import PostItem, {PostItemData} from "./PostItem.tsx"
 import {useRecoilState} from "recoil";
-import {fullPostsState} from "../stateManagement/RecoilState.ts";
+import {allPostsReviews, fullPostsState} from "../stateManagement/RecoilState.ts";
 import {getAllFullPosts} from "../services/posts-service.ts";
 import {Col, Container, Row} from "react-bootstrap";
 import '../css/PostsList.css';
 import PostDisplayDialog from "./PostDisplayDialog.tsx";
 import AddReviewDialog from "./AddReviewDialog.tsx";
 import PostForm from "./PostForm.tsx";
+import {UserReview} from "../services/reviews-service.ts";
 
 
 interface PostData {
@@ -22,6 +23,7 @@ interface PostListProps {
 
 function PostsList(props: PostListProps) {
     const [posts, setPosts] = useRecoilState<PostItemData[]>(fullPostsState);
+    const [allPostReviewsState, setAllPostReviewsState] = useRecoilState<UserReview[]>(allPostsReviews);
 
     const [showPostItemDialog, setShowPostItemDialog] = useState(false);
     const [showAddReviewDialog, setShowAddReviewDialog] = useState(false);
@@ -73,7 +75,6 @@ function PostsList(props: PostListProps) {
     useEffect(() => {
         setLoading(true);
         console.log("setPostList")
-        console.log("posts from recoil:", posts)
           setPostList(props.filterByUserId ? posts.filter(value => value.user._id === props.filterByUserId) : posts);
         postForDisplay && setPostForDisplay(posts.find(value => value._id === postForDisplay?._id))
         setLoading(false)
@@ -92,7 +93,7 @@ function PostsList(props: PostListProps) {
         return () => {
             console.log("clean up")
         }
-    }, [])
+    }, [allPostReviewsState])
 
 
 
@@ -104,9 +105,6 @@ function PostsList(props: PostListProps) {
                         <span className="sr-only"></span>
                     </div>
                 )}
-                {/*<Button onClick={fetchData} disabled={loading}>*/}
-                {/*    {loading ? 'Loading...' : 'Fetch Data'}*/}
-                {/*</Button>*/}
             </div>
             {/*<NavBar/>*/}
             {!showPostFormForEdit && <div className="background overflow-y-auto" style={{height: "84vh"}}>

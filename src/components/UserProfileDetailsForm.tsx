@@ -7,11 +7,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faImage} from "@fortawesome/free-solid-svg-icons";
 import {updatePhoto, uploadPhoto} from "../services/file-service.ts";
 import {saveNewUserProfileDetails, updateUserProfileDetails} from "../services/user-profile-details-service.ts";
-import {currentDisplayedComponentState, UserDetailsData, userDetailsState} from "../stateManagement/RecoilState.ts";
+import {alertState, UserDetailsData, userDetailsState} from "../stateManagement/RecoilState.ts";
 import {useRecoilState} from "recoil";
-import PostsList from "./PostsList.tsx";
-import Registration from "./Registration.tsx";
-import MyProfile from "./MyProfile.tsx";
+import {useNavigate} from "react-router-dom";
+import {clearAllFromLocalStorage} from "../services/token-service.ts";
 
 
 const schema = z.object({
@@ -30,14 +29,17 @@ export interface UserProfileDetailsProps {
 
 function UserProfileDetailsForm(props: UserProfileDetailsProps) {
     const [userProfileDetails, setUserProfileDetails] = useRecoilState(userDetailsState);
-    const [currDisplayedComp, setCurrDisplayedComp] = useRecoilState(currentDisplayedComponentState);
+    const [alertPopup, setAlertPopup] = useRecoilState(alertState);
 
     const [imgSrc, setImgSrc] = useState<File>()
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [nameInputState, setNameInputState] = useState<string | undefined>(!props.isInRegistrationMode ? "daniel" : undefined);
-    const [contactEmailInputState, setContactEmailInputState] = useState<string | undefined>(!props.isInRegistrationMode ? "daniel@m.com" : undefined);
-    const [contactPoneNumInputState, setContactPoneNumInputState] = useState<number | undefined>(!props.isInRegistrationMode ? 505675524 : undefined);
-    const [ageInputState, setAgeInputState] = useState<number | undefined>(!props.isInRegistrationMode ? 18 : undefined);
+    const [nameInputState, setNameInputState] = useState<string | undefined>(!props.isInRegistrationMode ? userProfileDetails.name : undefined);
+    const [contactEmailInputState, setContactEmailInputState] = useState<string | undefined>(!props.isInRegistrationMode ? userProfileDetails.contactEmail : undefined);
+    const [contactPoneNumInputState, setContactPoneNumInputState] = useState<number | undefined>(!props.isInRegistrationMode ? userProfileDetails.contactPhoneNumber : undefined);
+    const [ageInputState, setAgeInputState] = useState<number | undefined>(!props.isInRegistrationMode ? userProfileDetails.age : undefined);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const navigate = useNavigate();
 
 
     const imgSelected = (e: ChangeEvent<HTMLInputElement>) => {
@@ -76,9 +78,11 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
                        url = await uploadPhoto(imgSrc!)
                     } catch (e){
                         console.error("Error updating the image:", error);
+                        setAlertPopup({message: "Error updating the image!", variant:"danger"});
                     }
                 } else {
                     console.error("Error updating the image:", error);
+                    setAlertPopup({message: "Error updating the image!", variant:"danger"});
                 }
 
             }
@@ -92,9 +96,11 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
 
         !props.isInRegistrationMode && updateUserProfileDetails({...userProfileDetailsToForSaving, user: userProfileDetails.user}).then(value => {
             setUserProfileDetails(value);
-            setCurrDisplayedComp(<MyProfile userProfileDetails={value}/>);
+            setAlertPopup({message: "User Profile Data was updated successfully", variant:"success"})
+            navigate("/my-profile")
         }).catch((error) => {
             console.log(error);
+            setAlertPopup({message: "Error during updating user profile data...", variant:"danger"});
         })
 
 
@@ -102,18 +108,26 @@ function UserProfileDetailsForm(props: UserProfileDetailsProps) {
             .then(value => {
                 console.log(value);
                 setUserProfileDetails(value);
-                setCurrDisplayedComp(<PostsList/>);
+                setAlertPopup({message: "User Profile Data was saved successfully", variant:"success"})
+                navigate("/");
             }).catch(reason => {
-                console.log("on error: ", reason);//todo:1- alert
-                //todo:2- delete user from DB and clear all local storage and tokens states OR continu anyway and check later
-                //todo: return to registration comp or postlist comp
-                setCurrDisplayedComp(<Registration/>);
+                console.log("on error: ", reason);
+                setAlertPopup({message: "Error during saving user profile data...", variant:"danger"});
+                clearAllFromLocalStorage();
+                navigate("..")
             })
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="vstack gap-3 col-md-7 mx-auto"
               style={{overflowY:"auto", marginTop:"2rem", height:"84vh", backgroundColor:"seashell"}}>
+                <div style={{position:"fixed", zIndex:"1", top: "50%", left: "50%", transform: 'translate(-50%, -50%)'}}>
+                    {loading && (
+                        <div className="spinner-border" role="status">
+                            <span className="sr-only"></span>
+                        </div>
+                    )}
+                </div>
             <h1>My Profile</h1>
             <div className="d-flex justify-content-center position-relative">
                 <img

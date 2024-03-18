@@ -7,6 +7,7 @@ import {
 } from "../services/token-service.ts";
 import {PostItemData} from "../components/PostItem.tsx";
 import {UserReview} from "../services/reviews-service.ts";
+import {AlertData} from "../components/AlertMessage.tsx";
 
 
 // Interface for UserDetails
@@ -47,17 +48,20 @@ export const idTokenState = atom<string | undefined>({
     default: getIdTokenFromLocalStorage() ?? undefined
 });
 
-// Atom for Current component
-export const currentDisplayedComponentState = atom<ReactElement | null>({
-    key: 'currentDisplayedComponentState',
-    default: null
-});
 export const fullPostsState = atom<PostItemData[]>({
     key: 'fullPostsState',
     default: []
 });
 
-export const allPostsReviews  = atom<UserReview[]>({
-   key: 'allPostsReviews',
+export const allPostsReviews = atom<UserReview[]>({
+    key: 'allPostsReviews',
     default: []
 });
+
+export const alertState = atom<AlertData>({
+    key: 'alertState',
+    default: {
+        message: null,
+        variant: "success"
+    }
+})
